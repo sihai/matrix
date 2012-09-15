@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="item.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="itemCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="item.dao.insert"/>
+		<flushOnExecute statement="item.dao.update"/>
+		<flushOnExecute statement="item.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="item" type="com.ihome.matrix.domain.ItemDO"/>
+	<typeAlias alias="queryModel" type="com.ihome.matrix.model.ItemQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="itemResultMap" class="item">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="price" column="price"/>
+		<result property="status" column="status"/>
+		<result property="category.id" column="category"/>
+		<result property="logoURL" column="logo_url"/>
+		<result property="detailURL" column="detail_url"/>
+		
+		<result property="location" column="location"/>
+		<result property="number" column="number"/>
+		<result property="stuffStatus" column="stuff_status"/>
+		<result property="freightFeePayer" column="freight_fee_payer"/>
+		<result property="postFee" column="post_fee"/>
+		<result property="expressFee" column="express_fee"/>
+		<result property="emsFee" column="ems_fee"/>
+		<result property="hasDiscount" column="has_discount"/>
+		<result property="hasInvoice" column="has_invoice"/>
+		<result property="hasWarranty" column="has_warranty"/>
+		<result property="isSecondKill" column="is_second_kill"/>
+		<result property="isSellPromise" column="is_sell_promise"/>
+		<result property="isXinpin" column="is_xinpin"/>
+		
+		<result property="itemId" column="item_id"/>
+		<result property="shop.id" column="shop"/>
+		<result property="platform" column="platform"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个item
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="item">
+		<![CDATA[
+	        INSERT INTO item (
+        		id,
+                name,
+                price,
+                status,
+                category,
+                logo_url,
+                detail_url,
+                location,
+                number,
+                stuff_status,
+                freight_fee_payer,
+                post_fee,
+                express_fee,
+                ems_fee,
+                has_discount,
+                has_invoice,
+                has_warranty,
+                is_second_kill,
+                is_sell_promise,
+                is_xinpin,
+                item_id,
+                shop,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#price#,
+	        	#status#,
+	        	#category.id#,
+	        	#logoURL#,
+	        	#detailURL#,
+	        	#location#,
+                #number#,
+                #stuffStatus#,
+                #freightFeePayer#,
+                #postFee#,
+                #expressFee#,
+                #emsFee#,
+                #hasDiscount#,
+                #hasInvoice#,
+                #hasWarranty#,
+                #isSecondKill#,
+                #isSellPromise#,
+                #isXinpin#,
+                #itemId#,
+	        	#shop.id#,
+	        	#platform#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="itemResultMap" cacheModel="itemCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                price,
+                status,
+                category,
+                logo_url,
+                detail_url,
+                location,
+                number,
+                stuff_status,
+                freight_fee_payer,
+                post_fee,
+                express_fee,
+                ems_fee,
+                has_discount,
+                has_invoice,
+                has_warranty,
+                is_second_kill,
+                is_sell_promise,
+                is_xinpin,
+                item_id,
+                shop,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM item
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="queryModel" resultMap="itemResultMap" cacheModel="itemCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                price,
+                status,
+                category,
+                logo_url,
+                detail_url,
+                location,
+                number,
+                stuff_status,
+                freight_fee_payer,
+                post_fee,
+                express_fee,
+                ems_fee,
+                has_discount,
+                has_invoice,
+                has_warranty,
+                is_second_kill,
+                is_sell_promise,
+                is_xinpin,
+                item_id,
+                shop,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM item
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="category">
+    			<![CDATA[
+					category = #category#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="shop">
+    			<![CDATA[
+					shop = #shop#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+            	<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform <= #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="queryModel" resultClass="long" cacheModel="itemCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM item
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="category">
+    			<![CDATA[
+					category = #category#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="shop">
+    			<![CDATA[
+					shop = #shop#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+            	<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform <= #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新item
+      - ===============================================
+    -->
+	<update id="update" parameterClass="item">
+		UPDATE item
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="price">
+				price = #price:DOUBLE#
+            </isNotNull>
+			<isNotNull prepend="," property="status">
+				status = #status:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="category.id">
+				category = #category.id:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="logoURL">
+				logo_url = #logoURL:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="detailURL">
+				detail_url = #detailURL:VARCHAR#
+            </isNotNull>
+            
+            <isNotNull prepend="," property="location">
+				location = #location:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="number">
+				number = #number:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="stuffStatus">
+				stuff_status = #stuffStatus:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="freightFeePayer">
+				freight_fee_payer = #freightFeePayer:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="postFee">
+				post_fee = #postFee:DOUBLE#
+            </isNotNull>
+            <isNotNull prepend="," property="expressFee">
+				express_Fee = #expressFee:DOUBLE#
+            </isNotNull>
+            <isNotNull prepend="," property="emsFee">
+				ems_Fee = #emsFee:DOUBLE#
+            </isNotNull>
+            <isNotNull prepend="," property="hasDiscount">
+				has_discount = #hasDiscount:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="hasInvoice">
+				has_invoice = #hasInvoice:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="hasWarranty">
+				has_warranty = #hasWarranty:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="isSecondKill">
+				is_second_kill = #isSecondKill:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="isSellPromise">
+				is_sell_promise = #isSellPromise:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="isXinpin">
+				is_xinpin = #isXinpin:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="itemId">
+				itemId = #itemId:VARCHAR#
+            </isNotNull>
+       
+            <isNotNull prepend="," property="shop.id">
+				shop = #shop.id:INT#
+            </isNotNull>
+			<isNotNull prepend="," property="platform">
+				platform = #platform:INT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除User
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        UPDATE item
+	        SET is_deleted = 1
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>
