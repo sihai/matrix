@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings 
+		cacheModelsEnabled="false"
+		enhancementEnabled="true"
+		lazyLoadingEnabled="true"
+		maxRequests="256"
+		maxSessions="128"
+		maxTransactions="128"
+		useStatementNamespaces="true"
+	/>
+	
+	<sqlMap resource="sql-map/sqlmap-user.xml"/>
+	<sqlMap resource="sql-map/sqlmap-property-group.xml"/>
+	<sqlMap resource="sql-map/sqlmap-property.xml"/>
+	<sqlMap resource="sql-map/sqlmap-picture.xml"/>
+	<sqlMap resource="sql-map/sqlmap-brand.xml"/>
+	<sqlMap resource="sql-map/sqlmap-brand-category.xml"/>
+	<sqlMap resource="sql-map/sqlmap-brand-product.xml"/>
+	<sqlMap resource="sql-map/sqlmap-product.xml"/>
+	<sqlMap resource="sql-map/sqlmap-category.xml"/>
+	<sqlMap resource="sql-map/sqlmap-category-ass.xml"/>
+	<sqlMap resource="sql-map/sqlmap-shop-product.xml"/>
+	<sqlMap resource="sql-map/sqlmap-item.xml"/>
+	<sqlMap resource="sql-map/sqlmap-comment.xml"/>
+	<sqlMap resource="sql-map/sqlmap-shop-category.xml"/>
+	<sqlMap resource="sql-map/sqlmap-shop.xml"/>
+	<sqlMap resource="sql-map/sqlmap-activity.xml"/>
+	<sqlMap resource="sql-map/sqlmap-promotion-activity.xml"/>
+	<sqlMap resource="sql-map/sqlmap-website.xml"/>
+	<sqlMap resource="sql-map/sqlmap-trace-log.xml"/>
+	<sqlMap resource="sql-map/sqlmap-item-trace-log.xml"/>
+	<sqlMap resource="sql-map/sqlmap-shop-trace-log.xml"/>
+	<sqlMap resource="sql-map/sqlmap-website-trace-log.xml"/>
+</sqlMapConfig>

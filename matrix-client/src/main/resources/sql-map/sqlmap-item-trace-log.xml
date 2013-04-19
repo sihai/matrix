@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="itemTraceLog.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    <cacheModel id="itemTraceLogCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="itemTraceLog.dao.insert"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="itemTraceLog" type="com.ihome.matrix.domain.ItemTraceLogDO"/>
+	<typeAlias alias="itemTraceLogQueryModel" type="com.ihome.matrix.model.ItemTraceLogQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="itemTraceLogResultMap" class="itemTraceLog">
+		<result property="id" column="id"/>
+		<result property="uuid" column="uuid"/>
+		<result property="user.id" column="user_id"/>
+		<result property="user.name" column="user_name"/>
+		<result property="remoteIP" column="remote_ip"/>
+		<result property="item.id" column="item_id"/>
+		<result property="item.name" column="item_name"/>
+		<result property="item.price" column="item_price"/>
+		<result property="shop.id" column="shop_id"/>
+		<result property="shop.name" column="shop_name"/>
+		<result property="platform" column="platform"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个traceLog
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="itemTraceLog">
+		<![CDATA[
+	        INSERT INTO item_trace_log (
+        		id,
+        		uuid,
+                user_id,
+                user_name,
+                remote_ip,
+                item_id,
+               	item_name,
+                item_price,
+                shop_id,
+                shop_name,
+                platform,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#uuid#,
+	        	#user.id#,
+                #user.name#,
+                #remoteIP#,
+                #item.id#,
+                #item.name#,
+                #item.price#,
+                #shop.id#,
+                #shop.name#,
+                #platform#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<select id="query" parameterClass="itemTraceLogQueryModel" resultMap="itemTraceLogResultMap" cacheModel="itemTraceLogCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+        		uuid,
+                user_id,
+                user_name,
+                remote_ip,
+                item_id,
+               	item_name,
+                item_price,
+                shop_id,
+                shop_name,
+                platform,
+                gmt_create,
+                gmt_modified
+	        FROM item_trace_log
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="uuid">
+    			<![CDATA[
+					uuid = #uuid#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="userId">
+    			<![CDATA[
+					user_id = #userId#
+				]]>
+            </isNotNull>
+    		<isNotNull prepend="AND" property="itemId">
+    			<![CDATA[
+					item_id = #itemId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="shopId">
+    			<![CDATA[
+					shop_id = #shopId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+    			<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="itemTraceLogQueryModel" resultClass="long" cacheModel="itemTraceLogCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM item_trace_log
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="uuid">
+    			<![CDATA[
+					uuid = #uuid#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="userId">
+    			<![CDATA[
+					user_id = #userId#
+				]]>
+            </isNotNull>
+    		<isNotNull prepend="AND" property="itemId">
+    			<![CDATA[
+					item_id = #itemId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="shopId">
+    			<![CDATA[
+					shop_id = #shopId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+    			<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+</sqlMap>

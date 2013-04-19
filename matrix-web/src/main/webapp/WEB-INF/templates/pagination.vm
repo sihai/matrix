@@ -1,0 +1,61 @@
+#set($tPage= ${resultModel.totalPage})
+#set($cPage = ${resultModel.queryModel.currentPage})
+#set($leftStart = 1)
+#set($leftEnd = 2)
+#set($mStart = ${resultModel.queryModel.currentPage} - 2)
+#set($mEnd = ${resultModel.queryModel.currentPage} + 2)
+#set($rStart = ${resultModel.totalPage} - 1)
+#set($rEnd = ${resultModel.totalPage})
+
+#if ($mStart <= $leftEnd)
+	#set($leftStart = 0)
+	#set($leftEnd = 0)
+	#set($mStart = 1)
+#end
+#if ($mEnd >= $rStart)
+	#set($rStart = 0)
+	#set($rEnd = 0)
+	#set($mEnd = $tPage)
+#end
+
+<div id="pagination" class="pagination" style="float:right;">
+	<li><a class="pre" href="#" #if(${resultModel.queryModel.currentPage} == 1) class="disabled" #end onclick="goto($cPage -1)">&lt;</a></li>
+	
+	#if ($leftEnd > $leftStart)
+			#foreach($p in [${leftStart}..${leftEnd}])
+				<li><a class="pre" href="#" onclick="goto($p)">$!{p}</a></li>
+			#end
+		#end
+		#if ($mStart > $leftEnd + 1)
+			<li><a href="#">...</a></li>
+		#end
+		#foreach($p in [${mStart}..${mEnd}])
+			<li>
+			#if($p == $cPage) ## 当前页
+		    	<a href="#" class="pre active">$!{p}</a>
+			#else
+				<a class="pre" href="#" onclick="goto($p)">$!{p}</a>
+			#end
+			</li>
+		#end
+		#if ($rStart > $mEnd + 1)
+			<li><a href="#">...</a></li>
+		#end
+		#if ($rEnd > $rStart)
+			#foreach($p in [${rStart}..${rEnd}])
+				<li><a href="#" onclick="goto($p)">$!{p}</a></li>
+			#end
+		#end
+		
+		<li>
+		<a class="pre" href="#" #if($cPage == $tPage) class="disabled" #end onclick="goto($cPage + 1)">&gt;</a>
+		</li>
+		
+</div>
+
+<script type="text/javascript">
+	function goto(page) {
+		$("#current_page").val(page);
+		$("#page_form").submit();
+	}	
+</script>

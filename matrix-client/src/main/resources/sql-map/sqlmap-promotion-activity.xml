@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="promotionActivity.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="promotionActivityCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="promotionActivity.dao.insert"/>
+		<flushOnExecute statement="promotionActivity.dao.update"/>
+		<flushOnExecute statement="promotionActivity.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="promotionActivity" type="com.ihome.matrix.domain.PromotionActivityDO"/>
+	<typeAlias alias="promotionActivityQueryModel" type="com.ihome.matrix.model.PromotionActivityQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="promotionActivityResultMap" class="promotionActivity">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="logoURL" column="logo_url"/>
+		<result property="url" column="url"/>
+		<result property="rank" column="rank"/>
+		<result property="startTime" column="start_time"/>
+		<result property="endTime" column="end_time"/>
+		<result property="shop.id" column="shop"/>
+		<result property="category.id" column="category"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="promotionActivity">
+		<![CDATA[
+	        INSERT INTO promotionActivity (
+        		id,
+                name,
+                logo_url,
+                url,
+                rank,
+                start_time,
+                end_time,
+                shop,
+                category,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#logoURL#,
+	        	#url#,
+	        	#rank#,
+	        	#startTime#,
+	        	#endTime#,
+	        	#shop.id#,
+	        	#category.id#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="promotionActivityResultMap" cacheModel="promotionActivityCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                url,
+                rank,
+                start_time,
+                end_time,
+                shop,
+                category,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM promotion_activity
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="promotionActivityQueryModel" resultMap="promotionActivityResultMap" cacheModel="promotionActivityCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                url,
+                rank,
+                start_time,
+                end_time,
+                shop,
+                category,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM promotion_activity
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+    		<isNotNull prepend="AND" property="startTime">
+    			<![CDATA[
+					start_time >= #startTime#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="endTime">
+    			<![CDATA[
+					end_time >= #endTime#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY start_time ASC, id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="promotionActivityQueryModel" resultClass="long" cacheModel="promotionActivityCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM promotion_activity
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+    		<isNotNull prepend="AND" property="startTime">
+    			<![CDATA[
+					start_time >= #startTime#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="endTime">
+    			<![CDATA[
+					end_time >= #endTime#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="promotionActivity">
+		UPDATE promotion_activity
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="logoURL">
+				logo_url = #logoURL:VARCHAR#
+            </isNotNull>
+			<isNotNull prepend="," property="url">
+				url = #url:VARCHAR#      
+			</isNotNull>
+			<isNotNull prepend="," property="rank">
+				rank = #rank:BIGINT#      
+			</isNotNull>
+			<isNotNull prepend="," property="startTime">
+				start_time = #startTime:DATETIME#      
+			</isNotNull>
+			<isNotNull prepend="," property="endTime">
+				end_time = #endTime:DATETIME#      
+			</isNotNull>
+			<isNotNull prepend="," property="shop.id">
+				shop = #shop.id:BIGINT#      
+			</isNotNull>
+			<isNotNull prepend="," property="category.id">
+				category = #category.id:BIGINT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	promotion_activity
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

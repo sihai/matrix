@@ -1,0 +1,64 @@
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/jquery.validate.js"></script>
+<script src="/assets/js/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/assets/js/jquery-ui-i18n.js" type="text/javascript"></script>
+<script src="/assets/js/jquery.ui.widget.js" type="text/javascript"></script>
+<script src="/assets/js/jquery.ui.datepicker.js" type="text/javascript"></script>
+<script src="/assets/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+<script src="/assets/js/jquery-ui-slider-access.js" type="text/javascript"></script>
+<script src="/assets/js/bootstrap-transition.js"></script>
+<script src="/assets/js/bootstrap-alert.js"></script>
+<script src="/assets/js/bootstrap-modal.js"></script>
+<script src="/assets/js/bootstrap-dropdown.js"></script>
+<script src="/assets/js/bootstrap-scrollspy.js"></script>
+<script src="/assets/js/bootstrap-tab.js"></script>
+<script src="/assets/js/bootstrap-tooltip.js"></script>
+<script src="/assets/js/bootstrap-popover.js"></script>
+<script src="/assets/js/bootstrap-button.js"></script>
+<script src="/assets/js/bootstrap-collapse.js"></script>
+<script src="/assets/js/bootstrap-carousel.js"></script>
+<script src="/assets/js/bootstrap-typeahead.js"></script>
+
+<script text/javascript src="/assets/js/layer/layer.min.js"></script>
+
+<!--表单验证初始化-->
+
+<!--表单验证初始化 End-->
+<!---->
+<script text/javascript>
+	function login(returnURL) {
+		$("#loginForm")[0].reset();
+		$("#rt").val(returnURL);
+		$('#loginLayer').modal({
+ 				keyboard: true
+		});
+	}
+	
+	function acceptFriend(him, obj) {
+		${JQUERY}getJSON("/member/contactAction.jhtml?_operation_=_accept_friend_&him=" + him, '', function(response) {
+			if(response.isSucceed) {
+				obj.disabled = true;
+				obj.value = "已经添加对方为好友...";
+			} else {
+				obj.value = response.errorMsg;
+			}
+		});
+	}
+</script>
+<!---->
+<!--Google统计代码-->    
+<script text/javascript>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-26539516-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/assets/v1/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<!--Google统计代码 End--> 

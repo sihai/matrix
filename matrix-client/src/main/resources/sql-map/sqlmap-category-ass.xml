@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="categoryAss.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="categoryAssCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="categoryAss.dao.insert"/>
+		<flushOnExecute statement="categoryAss.dao.update"/>
+		<flushOnExecute statement="categoryAss.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="categoryAss" type="com.ihome.matrix.domain.CategoryAssDO"/>
+	<typeAlias alias="categoryAssQueryModel" type="com.ihome.matrix.model.CategoryAssQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="categoryAssResultMap" class="categoryAss">
+		<result property="id" column="id"/>
+		<result property="outCategoryId" column="out_category_id"/>
+		<result property="outCategoryName" column="out_category_name"/>
+		<result property="platform" column="platform"/>
+		<result property="shopName" column="shop_name"/>
+		<result property="category.id" column="inner_category_id"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个categoryAss
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="categoryAss">
+		<![CDATA[
+	        INSERT INTO category_ass (
+        		id,
+                out_category_id,
+                out_category_name,
+                platform,
+                shop_name,
+                inner_category_id,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#outCategoryId#,
+	        	#outCategoryName#,
+	        	#platform#,
+	        	#shopName#,
+	        	#category.id#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="categoryAssResultMap" cacheModel="categoryAssCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_category_id,
+                out_category_name,
+                platform,
+                shop_name,
+                inner_category_id,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM category_ass
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="query" parameterClass="categoryAssQueryModel" resultMap="categoryAssResultMap" cacheModel="categoryAssCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_category_id,
+                out_category_name,
+                platform,
+                shop_name,
+                inner_category_id,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM category_ass
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="outCategoryId">
+    			<![CDATA[
+					out_category_id = #outCategoryId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outCategoryName">
+            	<![CDATA[
+					out_category_name = #outCategoryName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="shopName">
+            	<![CDATA[
+					shop_name = #shopName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="innerCategoryId">
+            	<![CDATA[
+					inner_category_id = #innerCategoryId#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id ASC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="categoryAssQueryModel" resultClass="long" cacheModel="categoryAssCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM category_ass
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="outCategoryId">
+    			<![CDATA[
+					out_category_id = #outCategoryId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outCategoryName">
+            	<![CDATA[
+					out_category_name = #outCategoryName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="shopName">
+            	<![CDATA[
+					shop_name = #shopName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="innerCategoryId">
+            	<![CDATA[
+					inner_category_id = #innerCategoryId#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新categoryAss
+      - ===============================================
+    -->
+	<update id="update" parameterClass="categoryAss">
+		UPDATE category_ass
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="outCategoryId">
+				out_category_id = #outCategoryId:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="outCategoryName">
+				out_category_name = #outCategoryName:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="platform">
+				platform = #platform:INT#
+            </isNotNull>
+			<isNotNull prepend="," property="shopName">
+				shop_name = #shopName:VARCHAR#      
+			</isNotNull>
+			<isNotNull prepend="," property="category.id">
+				inner_category_id = #category.id:BIGINT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除User
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	category_ass
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

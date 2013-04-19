@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="property.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="propertyCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="property.dao.insert"/>
+		<flushOnExecute statement="property.dao.update"/>
+		<flushOnExecute statement="property.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="property" type="com.ihome.matrix.domain.PropertyDO"/>
+	<typeAlias alias="propertyQueryModel" type="com.ihome.matrix.model.PropertyQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="propertyResultMap" class="property">
+		<result property="id" column="id"/>
+		<result property="key" column="key"/>
+		<result property="value" column="value"/>
+		<result property="valueType" column="value_type"/>
+		<result property="group.id" column="group"/>
+		<result property="type" column="type"/>
+		<result property="owner" column="owner"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="property">
+		<![CDATA[
+	        INSERT INTO property (
+        		id,
+                key,
+                value,
+                value_type,
+                type,
+                owner,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#key#,
+	        	#value#,
+	        	#valueType#,
+	        	#type#,
+	        	#owner#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="propertyResultMap" cacheModel="propertyCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                key,
+                value,
+                value_type,
+                type,
+                owner,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM property
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="propertyQueryModel" resultMap="propertyResultMap" cacheModel="propertyCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                key,
+                value,
+                value_type,
+                type,
+                owner,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM property
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="owner">
+            	<![CDATA[
+					owner = #owner#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="group">
+    			<![CDATA[
+					group = #group#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="propertyQueryModel" resultClass="long" cacheModel="propertyCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM property
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="owner">
+            	<![CDATA[
+					owner = #owner#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="group">
+    			<![CDATA[
+					group = #group#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="property">
+		UPDATE property
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="key">
+				key = #key:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="value">
+				value = #value:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="valueType">
+				value_type = #valueType:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="group">
+				group = #group:BIGINT#
+            </isNotNull>
+			<isNotNull prepend="," property="type">
+				type = #type:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="owner">
+				owner = #owner:BIGINT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        UPDATE property
+	        SET is_deleted = 1
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

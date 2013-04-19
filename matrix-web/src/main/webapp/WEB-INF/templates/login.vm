@@ -1,0 +1,150 @@
+#set($JQUERY='$.')
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	    <title>Matrix-Console</title>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta name="description" content="Matrix,Console,Brand">
+	
+	    <!-- Le styles -->
+	    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+	    <link href="/assets/css/login.css" rel="stylesheet">
+	    <link href="/assets/css/bootstrap-responsive.css" rel="stylesheet">
+	    <link href="/assets/css/matrix.css" rel="stylesheet">
+	
+	    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	    <!--[if lt IE 9]>
+	      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	    <![endif]-->
+		
+	    <!-- Le fav and touch icons -->
+	    <link rel="shortcut icon" href="assets/ico/favicon.ico">
+	    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/ico/apple-touch-icon-144-precomposed.png">
+	    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/ico/apple-touch-icon-114-precomposed.png">
+	    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/ico/apple-touch-icon-72-precomposed.png">
+	    <link rel="apple-touch-icon-precomposed" href="/assets/ico/apple-touch-icon-57-precomposed.png">
+	</head>
+	<body>
+  		#parse("nav.vm")
+  		<div class="container-fluid">
+      		<div class="row-fluid">
+        		
+        		<div id="page_signin" style="padding:15px 45px 15px 160px;">
+                		
+                		<!--登录 S-->
+                		<div id="signin">
+                    		<div class="title">已经注册? 请登录:</div>
+                        	<form id="login_form" action="/user_action.jhtml?_operation_=_login_" method="post">
+                                <fieldset>
+                                	
+                                	#if(${loginErrorMsg})
+                                        <div class="clearfix">
+                                        	<div class="alert alert-error">
+                                        		$!{loginErrorMsg}
+                                        	</div>
+                                        </div>
+                                    #end
+                                    
+                                	<div class="clearfix">
+                                    	<label for="login_username"><span>用户名：</span></label>
+                                       	<div class="input">
+                                        	<input tabindex="1" id="login_username" name="name" label="Username" value="$!{user.name}" type="text" required>
+                                        </div>
+                                  	</div>
+                                    <div class="clearfix">
+                                    	<label for="ipassword"><span>密码：</span></label>
+                                        <div class="input">
+                                        	<input tabindex="2" id="login_password" name="password" label="Password" value="" type="password" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="actions">
+                                    	<input tabindex="3" class="btn primary large" type="submit" value="登录">
+                                        <p class="reset"><a tabindex="4" href="/signin/reset" title="找回用户名或密码">找回用户名或密码</a></p>
+                                    </div>
+                                                                      
+                           		</fieldset>
+                         	</form>
+                     	</div>
+                     	<!--登录 E-->
+                     	
+                    	<!--注册S-->
+                    	<div id="signup">
+                    		<div class="title">免费注册帐号!</div>
+                        	<form id="register_form" action="/user_action.jhtml?_operation_=_register_" method="post" class="form-stacked">
+                            	<fieldset>
+                            	
+                            		#if(${registerErrorMsg})
+                                        <div class="clearfix">
+                                        	<div class="alert alert-error">
+                                        		$!{registerErrorMsg}
+                                        	</div>
+                                        </div>
+                                    #end
+                                    
+                                	<div class="clearfix">
+                                    	<label for="isignup_username">用户名：</label>
+                                        <div class="input">
+                                        	<input id="isignup_username" tabindex="5" name="name" label="Username" value="$!{user.name}" type="text">
+                                            <span class="help-block">May contain letters, digits, dashes and underscores, and should be between 2 and 20 characters long.</span>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                    	<label for="isignup_email">邮箱：</label>
+                                        <div class="input">
+                                        	<input id="isignup_email" tabindex="6" name="email" label="Email address" value="$!{user.email}" type="text">
+                                            <span class="help-block"><strong>Type carefully.</strong> You will be sent a confirmation email.</span>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                    	<label for="isignup_password">密码：</label>
+                                        <div class="input">
+                                        	<input id="isignup_password" tabindex="7" name="password" label="Password" value="" type="password">
+                                            <span class="help-block">The longer the better. Include numbers for protein.</span>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                    	<label for="isignup_confirm_password">确认密码：</label>
+                                        <div class="input">
+                                        	<input id="isignup_confirm_password" tabindex="7" name="confirm_password" label="Repassword" value="" type="password">
+                                            <span class="help-block">The longer the better. Include numbers for protein.</span>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="clearfix">
+                                    	<p class="clickedit">By clicking on the "Create your account" button below, you certify that you have read and agree to our <a href="/terms" title="Terms of use" target="_blank">terms of use</a> and <a href="/privacy" title="Privacy policy" target="_blank">privacy policy</a>.</p>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="input">
+                                        	<ul class="inputs-list">
+                                            	<li><label><input id="isignup_subscribe" tabindex="8" type="checkbox" name="subscribe" label="Subscribe" value="1" checked="checked"><span>Sign me up for the newsletter (provided by MailChimp)</span></label></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    -->
+                                    <div class="actions">
+                                    	<input tabindex="9" class="btn success large" type="submit" value="注册">
+                                    </div>
+                             	</fieldset>
+                             	<input name="from" value="0" type="hidden">
+                        	</form>
+                      	</div>
+                      	<!--注册 E-->
+                      	
+                     	<script>$("#iusername").focus();</script>
+                  	</div>
+               	</div>
+			</div>
+        		
+        		
+        		
+        		        		
+      		</div><!--/row-->
+			#parse("footer.vm")
+    	</div><!--/.fluid-container-->
+		
+		#parse("js.vm")
+  	</body>
+  </html>

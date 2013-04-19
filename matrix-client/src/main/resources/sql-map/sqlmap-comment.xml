@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="comment.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="commentCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="comment.dao.insert"/>
+		<flushOnExecute statement="comment.dao.update"/>
+		<flushOnExecute statement="comment.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="comment" type="com.ihome.matrix.domain.CommentDO"/>
+	<typeAlias alias="commentQueryModel" type="com.ihome.matrix.model.ActivityQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="commentResultMap" class="comment">
+		<result property="id" column="id"/>
+		<result property="publisher" column="publisher"/>
+		<result property="score" column="score"/>
+		<result property="content" column="content"/>
+		<result property="type" column="type"/>
+		<result property="owner.id" column="owner"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="isBuy" column="is_buy"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="comment">
+		<![CDATA[
+	        INSERT INTO comment (
+        		id,
+                publisher,
+                score,
+                content,
+                type,
+                owner,
+                publish_time,
+                is_buy,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#publisher#,
+                #score#,
+                #content#,
+                #type#,
+                #owner.id#,
+                #publishTime#,
+                #isBuy#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="commentResultMap" cacheModel="commentCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                publisher,
+                score,
+                content,
+                type,
+                owner,
+                publish_time,
+                is_buy,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM comment
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="commentQueryModel" resultMap="commentResultMap" cacheModel="commentCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                publisher,
+                score,
+                content,
+                type,
+                owner,
+                publish_time,
+                is_buy,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM comment
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="owner">
+    			<![CDATA[
+					owner = #owner#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY publish_time DESC, id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="commentQueryModel" resultClass="long" cacheModel="commentCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM comment
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="owner">
+    			<![CDATA[
+					owner = #owner#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="comment">
+		UPDATE comment
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="publisher">
+				publisher = #publisher:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="score">
+				score = #score:BIGINT#
+            </isNotNull>
+			<isNotNull prepend="," property="content">
+				content = #content:VARCHAR#      
+			</isNotNull>
+			<isNotNull prepend="," property="type">
+				type = #type:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="owne.id">
+				owner = #owner.id:BIGINT#      
+			</isNotNull>
+			<isNotNull prepend="," property="publishTime">
+				publish_time = #publishTime:DATETIME#      
+			</isNotNull>
+			<isNotNull prepend="," property="isBuy">
+				is_buy = #isBuy:TINYINT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	comment
+	        WHERE id = #value#
+    	]]>
+	</delete>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="deleteByTypeAndOwner" parameterClass="map">
+		<![CDATA[
+	        DELETE FROM
+	        	comment
+	        WHERE 
+	        		type = #type#
+	        	AND
+	        		owner = #owner#
+    	]]>
+	</delete>
+</sqlMap>

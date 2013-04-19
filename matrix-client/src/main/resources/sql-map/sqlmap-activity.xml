@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="activity.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="activityCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="activity.dao.insert"/>
+		<flushOnExecute statement="activity.dao.update"/>
+		<flushOnExecute statement="activity.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="activity" type="com.ihome.matrix.domain.ActivityDO"/>
+	<typeAlias alias="activityQueryModel" type="com.ihome.matrix.model.ActivityQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="activityResultMap" class="activity">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="logoURL" column="logo_url"/>
+		<result property="url" column="url"/>
+		<result property="rank" column="rank"/>
+		<result property="startTime" column="start_time"/>
+		<result property="endTime" column="end_time"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="activity">
+		<![CDATA[
+	        INSERT INTO activity (
+        		id,
+                name,
+                logo_url,
+                url,
+                rank,
+                start_time,
+                end_time,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#logoURL#,
+	        	#url#,
+	        	#rank#,
+	        	#startTime#,
+	        	#endTime#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="activityResultMap" cacheModel="activityCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                url,
+                rank,
+                start_time,
+                end_time,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM activity
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="activityQueryModel" resultMap="activityResultMap" cacheModel="activityCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                url,
+                rank,
+                start_time,
+                end_time,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM activity
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+    		<isNotNull prepend="AND" property="startTime">
+    			<![CDATA[
+					start_time >= #startTime#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="endTime">
+    			<![CDATA[
+					end_time >= #endTime#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY start_time ASC, id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="activityQueryModel" resultClass="long" cacheModel="activityCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM activity
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+    		<isNotNull prepend="AND" property="startTime">
+    			<![CDATA[
+					start_time >= #startTime#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="endTime">
+    			<![CDATA[
+					end_time >= #endTime#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="activity">
+		UPDATE activity
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="logoURL">
+				logo_url = #logoURL:VARCHAR#
+            </isNotNull>
+			<isNotNull prepend="," property="url">
+				url = #url:VARCHAR#      
+			</isNotNull>
+			<isNotNull prepend="," property="rank">
+				rank = #rank:BIGINT#      
+			</isNotNull>
+			<isNotNull prepend="," property="startTime">
+				start_time = #startTime:DATETIME#      
+			</isNotNull>
+			<isNotNull prepend="," property="endTime">
+				end_time = #endTime:DATETIME#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	activity
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

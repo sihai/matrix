@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="shop.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="shopCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="shop.dao.insert"/>
+		<flushOnExecute statement="shop.dao.update"/>
+		<flushOnExecute statement="shop.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="shop" type="com.ihome.matrix.domain.ShopDO"/>
+	<typeAlias alias="shopQueryModel" type="com.ihome.matrix.model.ShopQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="shopResultMap" class="shop">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="sellerName" column="seller_name"/>
+		<result property="description" column="description"/>
+		<result property="logoURL" column="logo_url"/>
+		<result property="detailURL" column="detail_url"/>
+		<result property="location" column="location"/>
+		<result property="payways" column="payways"/>
+		<result property="distributeWays" column="distribute_ways"/>
+		<result property="shopId" column="shop_id"/>
+		<result property="rank" column="rank"/>
+		<result property="isRecommend" column="is_recommend"/>
+		<result property="platform" column="platform"/>
+		<result property="status" column="status"/>
+		<result property="shopScore.id" column="shop_score"/>
+		<result property="license" column="license"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个shop
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="shop">
+		<![CDATA[
+	        INSERT INTO shop (
+        		id,
+                name,
+                seller_name,
+                description,
+               	logo_url,
+                detail_url,
+                location,
+                payways,
+                distribute_ways,
+                shop_id,
+                rank,
+                is_recommend,
+                platform,
+                status,
+                shop_score,
+                license,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#sellerName#,
+	        	#description#,
+	        	#logoURL#,
+	        	#detailURL#,
+	        	#location#,
+	        	#payways#,
+	        	#distributeWays#,
+	        	#shopId#,
+	        	#rank#,
+	        	#isRecommend#,
+	        	#platform#,
+	        	#status#,
+	        	#shopScore.id#,
+	        	#license#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="shopResultMap" cacheModel="shopCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                seller_name,
+                description,
+                logo_url,
+                detail_url,
+                location,
+                payways,
+                distribute_ways,
+                shop_id,
+                rank,
+                is_recommend,
+                platform,
+                status,
+                shop_score,
+                license,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM shop
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按shop_id and platform查询
+      - ===============================================
+    -->
+	<select id="getByShopIdAndPlatform" parameterClass="map" resultMap="shopResultMap" cacheModel="shopCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                seller_name,
+                description,
+                logo_url,
+                detail_url,
+                location,
+                payways,
+                distribute_ways,
+                shop_id,
+                rank,
+                is_recommend,
+                platform,
+                status,
+                shop_score,
+                license,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM shop
+	        WHERE 
+	        		shop_id = #shopId#
+	        	AND
+	        		platform = #platform#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="shopQueryModel" resultMap="shopResultMap" cacheModel="shopCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                seller_name,
+                description,
+                logo_url,
+                detail_url,
+                location,
+                payways,
+                distribute_ways,
+                shop_id,
+                rank,
+                is_recommend,
+                platform,
+                status,
+                shop_score,
+                license,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM shop
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+            	<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="isRecommend">
+            	<![CDATA[
+					is_recommend = #isRecommend#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY rank ASC, id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="shopQueryModel" resultClass="long" cacheModel="shopCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM shop
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+            	<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="isRecommend">
+            	<![CDATA[
+					is_recommend = #isRecommend#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新shop
+      - ===============================================
+    -->
+	<update id="update" parameterClass="shop">
+		UPDATE shop
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="sellerName">
+				seller_name = #sellerName:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="description">
+				description = #description:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="logoURL">
+				logo_url = #logoURL:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="detailURL">
+				detail_url = #detailURL:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="location">
+				location = #location:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="payways">
+				payways = #payways:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="distributeWays">
+				distribute_ways = #distributeWays:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="shopId">
+				shop_id = #shopId:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="rank">
+				rank = #rank:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="isRecommend">
+				is_recommend = #isRecommend:TINYINT#
+            </isNotNull>
+            <isNotNull prepend="," property="platform">
+				platform = #platform:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="status">
+				status = #status:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="shopScore.id">
+				shop_score = #shopScore.id:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="license">
+				license = #license:VARCHAR#
+            </isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除Shop
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	shop
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="picture.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="pictureCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="picture.dao.insert"/>
+		<flushOnExecute statement="picture.dao.update"/>
+		<flushOnExecute statement="picture.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="picture" type="com.ihome.matrix.domain.PictureDO"/>
+	<typeAlias alias="pictureQueryModel" type="com.ihome.matrix.model.PictureQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="pictureResultMap" class="picture">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="url" column="url"/>
+		<result property="type" column="type"/>
+		<result property="owner" column="owner"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="picture">
+		<![CDATA[
+	        INSERT INTO picture (
+        		id,
+                title,
+                url,
+                type,
+                owner,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#title#,
+	        	#url#,
+	        	#type#,
+	        	#owner#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="pictureResultMap" cacheModel="pictureCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                title,
+                url,
+                type,
+                owner,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM picture
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="pictureQueryModel" resultMap="pictureResultMap" cacheModel="pictureCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                title,
+                url,
+                type,
+                owner,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM picture
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="owner">
+            	<![CDATA[
+					owner = #owner#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="pictureQueryModel" resultClass="long" cacheModel="pictureCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM picture
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="owner">
+            	<![CDATA[
+					owner = #owner#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="picture">
+		UPDATE picture
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="title">
+				title = #title:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="url">
+				url = #url:VARCHAR#
+            </isNotNull>
+			<isNotNull prepend="," property="type">
+				type = #type:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="owner">
+				owner = #owner:BIGINT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        UPDATE picture
+	        SET is_deleted = 1
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

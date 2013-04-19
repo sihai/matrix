@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="brand.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="brandCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="brand.dao.insert"/>
+		<flushOnExecute statement="brand.dao.update"/>
+		<flushOnExecute statement="brand.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="brand" type="com.ihome.matrix.domain.BrandDO"/>
+	<typeAlias alias="brandQueryModel" type="com.ihome.matrix.model.BrandQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="brandResultMap" class="brand">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="logoURL" column="logo_url"/>
+		<result property="companyName" column="company_name"/>
+		<result property="companyURL" column="company_url"/>
+		<result property="status" column="status"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="brand">
+		<![CDATA[
+	        INSERT INTO brand (
+        		id,
+                name,
+                logo_url,
+                company_name,
+                company_url,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#logoURL#,
+	        	#companyName#,
+	        	#companyURL#,
+	        	#status#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="brandResultMap" cacheModel="brandCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                company_name,
+                company_url,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM brand
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按name查询
+      - ===============================================
+    -->
+	<select id="getByName" parameterClass="string" resultMap="brandResultMap" cacheModel="brandCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                company_name,
+                company_url,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM brand
+	        WHERE name = #name#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="brandQueryModel" resultMap="brandResultMap" cacheModel="brandCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                logo_url,
+                company_name,
+                company_url,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM brand
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+    		<isNotNull prepend="AND" property="status">
+    			<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="brandQueryModel" resultClass="long" cacheModel="brandCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM brand
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="name">
+				name LIKE CONCAT('%',#name#,'%')
+            </isNotNull>
+    		<isNotNull prepend="AND" property="status">
+    			<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="brand">
+		UPDATE brand
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="logoURL">
+				logo_url = #logoURL:VARCHAR#
+            </isNotNull>
+			<isNotNull prepend="," property="companyName">
+				company_name = #companyName:VARCHAR#      
+			</isNotNull>
+			<isNotNull prepend="," property="companyURL">
+				company_url = #companyURL:VARCHAR#      
+			</isNotNull>
+			<isNotNull prepend="," property="status">
+				status = #status:INT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	brand
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

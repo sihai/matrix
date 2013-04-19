@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="webSiteTraceLog.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+
+	<typeAlias alias="webSiteTraceLog" type="com.ihome.matrix.domain.WebSiteTraceLogDO"/>
+	
+	<!--
+      - ===============================================
+      - 创建一个traceLog
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="webSiteTraceLog">
+		<![CDATA[
+	        INSERT INTO web_site_trace_log (
+        		id,
+        		uuid,
+                user_id,
+                user_name,
+                remote_ip,
+                web_site_id,
+                web_site_name,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#uuid#,
+	        	#user.id#,
+                #user.name#,
+                #remoteIP#,
+                #webSite.id#,
+                #webSite.name#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+</sqlMap>

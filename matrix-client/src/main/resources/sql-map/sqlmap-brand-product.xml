@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="brandProduct.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="brandProductCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="brandProduct.dao.insert"/>
+		<flushOnExecute statement="brandProduct.dao.update"/>
+		<flushOnExecute statement="brandProduct.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="brandProduct" type="com.ihome.matrix.domain.BrandProductDO"/>
+	<typeAlias alias="brandProductQueryModel" type="com.ihome.matrix.model.BrandProductQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="brandProductResultMap" class="brandProduct">
+		<result property="id" column="id"/>
+		<result property="brand.id" column="brand"/>
+		<result property="product.id" column="product"/>
+		<result property="rank" column="rank"/>
+		<result property="status" column="status"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="brandProduct">
+		<![CDATA[
+	        INSERT INTO brand_product (
+        		id,
+                brand,
+                product,
+                rank,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#brand.id#,
+	        	#product.id#,
+	        	#rank#,
+	        	#status#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="brandProductResultMap" cacheModel="brandProductCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                brand,
+                product,
+                rank,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM brand_product
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="brandProductQueryModel" resultMap="brandProductResultMap" cacheModel="brandProductCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                brand,
+                product,
+                rank,
+                status,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM brand_product
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="brand">
+    			<![CDATA[
+					brand = #brand#
+				]]>
+            </isNotNull>
+    		<isNotNull prepend="AND" property="product">
+    			<![CDATA[
+					product = #product#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+    			<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY rank ASC, id DESC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="brandProductQueryModel" resultClass="long" cacheModel="brandProductCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM brand_product
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="brand">
+    			<![CDATA[
+					brand = #brand#
+				]]>
+            </isNotNull>
+    		<isNotNull prepend="AND" property="product">
+    			<![CDATA[
+					product = #product#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="status">
+    			<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新
+      - ===============================================
+    -->
+	<update id="update" parameterClass="brandProduct">
+		UPDATE brand_product
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="brand.id">
+				brand = #brand.id:BIGINT#
+            </isNotNull>
+			<isNotNull prepend="," property="product.id">
+				product = #product.id:BIGINT#      
+			</isNotNull>
+			<isNotNull prepend="," property="rank">
+				rank = #rank:BIGINT#      
+			</isNotNull>
+			<isNotNull prepend="," property="status">
+				status = #status:INT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	brand_product
+	        WHERE id = #value#
+    	]]>
+	</delete>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="deleteByBrandId" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	brand_product
+	        WHERE brand = #value#
+    	]]>
+	</delete>
+	
+	<!--
+      - ===============================================
+      - 删除
+      - ===============================================
+    -->
+	<delete id="deleteByBrandAndProduct" parameterClass="map">
+		<![CDATA[
+	        DELETE FROM
+	        	brand_product
+	        WHERE
+	        		brand = #brand#
+	        	AND
+	        		product = #product#
+    	]]>
+	</delete>
+</sqlMap>

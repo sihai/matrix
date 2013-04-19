@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="webSite.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="webSiteCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="webSite.dao.insert"/>
+		<flushOnExecute statement="webSite.dao.update"/>
+		<flushOnExecute statement="webSite.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="webSite" type="com.ihome.matrix.domain.WebSiteDO"/>
+	<typeAlias alias="webSiteQueryModel" type="com.ihome.matrix.model.WebSiteQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="webResultMap" class="webSite">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="siteURL" column="site_url"/>
+		<result property="logo" column="logo"/>
+		<result property="type" column="type"/>
+		<result property="rank" column="rank"/>
+		<result property="viewCount" column="view_count"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个shop
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="webSite">
+		<![CDATA[
+	        INSERT INTO web_site (
+        		id,
+                name,
+                site_url,
+                logo,
+                type,
+                rank,
+                view_count,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#siteURL#,
+	        	#logo#,
+	        	#type#,
+	        	#rank#,
+	        	#viewCount#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="webResultMap" cacheModel="webSiteCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                site_url,
+                logo,
+                type,
+                rank,
+                view_count,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM web_site
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="getByName" parameterClass="string" resultMap="webResultMap" cacheModel="webSiteCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                site_url,
+                logo,
+                type,
+                rank,
+                view_count,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM web_site
+	        WHERE name = #value#
+    	]]>
+	</select>
+	
+	<select id="query" parameterClass="webSiteQueryModel" resultMap="webResultMap" cacheModel="webSiteCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                site_url,
+                logo,
+                type,
+                rank,
+                view_count,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM web_site
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+        </dynamic>
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="webSiteQueryModel" resultClass="long" cacheModel="webSiteCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM web_site
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="type">
+    			<![CDATA[
+					type = #type#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新webSite
+      - ===============================================
+    -->
+	<update id="update" parameterClass="webSite">
+		UPDATE web_site
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="siteURL">
+				site_url = #siteURL:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="logo">
+				logo = #logo:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="type">
+				type = #type:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="rank">
+				rank = #rank:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="viewCount">
+				view_count = #viewCount:INT#
+            </isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除User
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        UPDATE web_site
+	        SET is_deleted = 1
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

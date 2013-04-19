@@ -1,0 +1,95 @@
+<input type="hidden" name="category.id" id ="category" />
+
+<div class="control-group">
+	<label class="control-label" for="root">一级类目</label>
+	<div class="controls">
+		<select id="root" name="root" class="required" onchange="rootChanged()"></select>
+	</div>
+</div>
+
+<div class="control-group">
+	<label class="control-label" for="main">二级类目</label>
+	<div class="controls">
+		<select id="main" name="main" class="required" onchange="mainChanged()"></select>
+	</div>
+</div>
+
+<div class="control-group">
+	<label class="control-label" for="main">三级类目</label>
+	<div class="controls">
+		<select id="thrid" name="thrid" class="required" onchange="thridChanged()"></select>
+	</div>
+</div>
+
+
+<div class="control-group">
+	<label class="control-label" for="main">叶子级类目</label>
+	<div class="controls">
+		<select id="leaf" name="leaf" class="required" onchange="leafChanged()"></select>
+	</div>
+</div>
+
+<script>
+	//
+	function initCategory() {
+		${JQUERY}getJSON("/category_query.jhtml?parent=1", function(response) {
+			if(response.isSucceed) {
+				$('#root').append('<option value="-1">请选择</option>');
+				for(var i = 0; i < response.result.length; i++) {
+					$('#root').append('<option value="' + response.result[i].id + '">' + response.result[i].name + '</option>');
+				}
+			}
+		});
+	}
+	
+	// 
+	function rootChanged() {
+		var parent = $('#root').val();
+		$('#category').val(parent);
+		${JQUERY}getJSON("/category_query.jhtml?parent=" + parent, function(response) {
+			if(response.isSucceed) {
+				$('#main').empty();
+				$('#leaf').empty();
+				$('#main').append('<option value="-1">请选择</option>');
+				for(var i = 0; i < response.result.length; i++) {
+					$('#main').append('<option value="' + response.result[i].id + '">' + response.result[i].name + '</option>');
+				}
+			}
+		});
+	}
+	
+	// 
+	function mainChanged() {
+		var parent = $('#main').val();
+		$('#category').val(parent);
+		${JQUERY}getJSON("/category_query.jhtml?parent=" + parent, function(response) {
+			if(response.isSucceed) {
+				$('#thrid').empty();
+				$('#thrid').append('<option value="-1">请选择</option>');
+				for(var i = 0; i < response.result.length; i++) {
+					$('#thrid').append('<option value="' + response.result[i].id + '">' + response.result[i].name + '</option>');
+				}
+			}
+		});
+	}
+	
+	// 
+	function thridChanged() {
+		var parent = $('#thrid').val();
+		$('#category').val(parent);
+		${JQUERY}getJSON("/category_query.jhtml?parent=" + parent, function(response) {
+			if(response.isSucceed) {
+				$('#leaf').empty();
+				$('#leaf').append('<option value="-1">请选择</option>');
+				for(var i = 0; i < response.result.length; i++) {
+					$('#leaf').append('<option value="' + response.result[i].id + '">' + response.result[i].name + '</option>');
+				}
+			}
+		});
+	}
+	
+	function leafChanged() {
+		var parent = $('#leaf').val();
+		$('#category').val(parent);
+	}
+</script>

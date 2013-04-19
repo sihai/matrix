@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+  default-autowire="byName">
+
+	<import resource="classpath*:/spring/spring-matrix-db-ibatis.xml" />
+	
+	<!-- DAO -->
+	<bean id="userDAO" class="com.ihome.matrix.dao.ibatis.UserDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="categoryDAO" class="com.ihome.matrix.dao.ibatis.CategoryDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="categoryAssDAO" class="com.ihome.matrix.dao.ibatis.CategoryAssDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="brandDAO" class="com.ihome.matrix.dao.ibatis.BrandDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="brandCategoryDAO" class="com.ihome.matrix.dao.ibatis.BrandCategoryDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="brandProductDAO" class="com.ihome.matrix.dao.ibatis.BrandProductDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="productDAO" class="com.ihome.matrix.dao.ibatis.ProductDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="propertyGroupDAO" class="com.ihome.matrix.dao.ibatis.PropertyGroupDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="propertyDAO" class="com.ihome.matrix.dao.ibatis.PropertyDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="pictureDAO" class="com.ihome.matrix.dao.ibatis.PictureDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="itemDAO" class="com.ihome.matrix.dao.ibatis.ItemDAOImpl">
+	    <property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="commentDAO" class="com.ihome.matrix.dao.ibatis.CommentDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="shopDAO" class="com.ihome.matrix.dao.ibatis.ShopDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="shopProductDAO" class="com.ihome.matrix.dao.ibatis.ShopProductDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="shopCategoryDAO" class="com.ihome.matrix.dao.ibatis.ShopCategoryDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="activityDAO" class="com.ihome.matrix.dao.ibatis.ActivityDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="promotionActivityDAO" class="com.ihome.matrix.dao.ibatis.PromotionActivityDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="webSiteDAO" class="com.ihome.matrix.dao.ibatis.WebSiteDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="traceLogDAO" class="com.ihome.matrix.dao.ibatis.TraceLogDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="itemTraceLogDAO" class="com.ihome.matrix.dao.ibatis.ItemTraceLogDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="shopTraceLogDAO" class="com.ihome.matrix.dao.ibatis.ShopTraceLogDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="webSiteTraceLogDAO" class="com.ihome.matrix.dao.ibatis.WebSiteTraceLogDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	
+	<!-- Manager -->
+	<bean id="userManager" class="com.ihome.matrix.manager.impl.UserManagerImpl">
+		<property name="userDAO" ref="userDAO" />
+	</bean>
+	<bean id="pictureManager" class="com.ihome.matrix.manager.impl.PictureManagerImpl">
+		<property name="pictureDAO" ref="pictureDAO" />
+	</bean>
+	<bean id="propertyManager" class="com.ihome.matrix.manager.impl.PropertyManagerImpl">
+		<property name="propertyGroupDAO" ref="propertyGroupDAO" />
+	</bean>
+	<bean id="brandManager" class="com.ihome.matrix.manager.impl.BrandManagerImpl">
+		<property name="brandDAO" ref="brandDAO" />
+		<property name="brandCategoryDAO" ref="brandCategoryDAO" />
+		<property name="brandProductDAO" ref="brandProductDAO" />
+		<property name="categoryManager" ref="categoryManager" />
+	</bean>
+	<bean id="productManager" class="com.ihome.matrix.manager.impl.ProductManagerImpl">
+		<property name="productDAO" ref="productDAO" />
+		<property name="brandDAO" ref="brandDAO" />
+		<property name="categoryManager" ref="categoryManager" />
+	</bean>
+	<bean id="itemManager" class="com.ihome.matrix.manager.impl.ItemManagerImpl">
+		<property name="itemDAO" ref="itemDAO" />
+		<property name="productDAO" ref="productDAO" />
+		<property name="categoryManager" ref="categoryManager" />
+	</bean>
+	<bean id="commentManager" class="com.ihome.matrix.manager.impl.CommentManagerImpl">
+		<property name="commentDAO" ref="commentDAO" />
+	</bean>
+	<bean id="categoryManager" class="com.ihome.matrix.manager.impl.CategoryManagerImpl">
+		<property name="categoryDAO" ref="categoryDAO" />
+		<property name="categoryAssDAO" ref="categoryAssDAO" />
+		<property name="productDAO" ref="productDAO" />
+		<property name="shopCategoryDAO" ref="shopCategoryDAO" />
+		<property name="itemDAO" ref="itemDAO" />
+	</bean>
+	<bean id="shopManager" class="com.ihome.matrix.manager.impl.ShopManagerImpl">
+		<property name="shopDAO" ref="shopDAO" />
+		<property name="shopProductDAO" ref="shopProductDAO" />
+		<property name="shopCategoryDAO" ref="shopCategoryDAO" />
+		<property name="categoryManager" ref="categoryManager" />
+		<property name="productManager" ref="productManager" />
+	</bean>
+	<bean id="activityManager" class="com.ihome.matrix.manager.impl.ActivityManagerImpl">
+		<property name="activityDAO" ref="activityDAO" />
+	</bean>
+	<bean id="promotionActivityManager" class="com.ihome.matrix.manager.impl.PromotionActivityManagerImpl">
+		<property name="promotionActivityDAO" ref="promotionActivityDAO" />
+	</bean>
+	<bean id="webSiteManager" class="com.ihome.matrix.manager.impl.WebSiteManagerImpl">
+		<property name="webSiteDAO" ref="webSiteDAO" />
+	</bean>
+	<bean id="traceLogManager" class="com.ihome.matrix.manager.impl.TraceLogManagerImpl">
+		<property name="traceLogDAO" ref="traceLogDAO" />
+		<property name="itemTraceLogDAO" ref="itemTraceLogDAO" />
+		<property name="shopTraceLogDAO" ref="shopTraceLogDAO" />
+		<property name="webSiteTraceLogDAO" ref="webSiteTraceLogDAO" />
+	</bean>
+	
+	<bean id="sequence" class="com.it.iddl.sequence.DefaultSequence">
+		<property name="name" value="uuid" />
+		<property name="sequenceRangeDAO">
+			<bean class="com.it.iddl.sequence.db.DefaultSequenceRangeDAO">
+				<property name="tableName" value="matrix_sequence" />
+				<property name="dataSource" ref="matrixDataSource" />
+			</bean>
+		</property>
+	</bean>
+	
+	
+	
+	<import resource="classpath*:/spring/spring-matrix-cluster.xml" />
+	<import resource="classpath*:/spring/spring-matrix-solr.xml" />
+	<import resource="classpath*:/spring/spring-matrix-indexer.xml" />
+	<import resource="classpath*:/spring/spring-matrix-searcher.xml" />
+	
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+  default-autowire="byName">
+
+	<!-- Solr Server Adapter -->
+	<bean id="itemSolrServerAdapter" class="com.ihome.matrix.solr.SolrServerAdapter" init-method="init" destroy-method="destroy">
+		<property name="serverAddress">
+			<value><![CDATA[http://localhost:8983/solr/item/]]></value>
+		</property>
+	</bean>
+	
+	<bean id="shopSolrServerAdapter" class="com.ihome.matrix.solr.SolrServerAdapter" init-method="init" destroy-method="destroy">
+		<property name="serverAddress">
+			<value><![CDATA[http://localhost:8983/solr/shop/]]></value>
+		</property>
+	</bean>
+	
+	<bean id="productSolrServerAdapter" class="com.ihome.matrix.solr.SolrServerAdapter" init-method="init" destroy-method="destroy">
+		<property name="serverAddress">
+			<value><![CDATA[http://localhost:8983/solr/product/]]></value>
+		</property>
+	</bean>
+	
+</beans>

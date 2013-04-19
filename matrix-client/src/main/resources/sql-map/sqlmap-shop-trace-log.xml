@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="shopTraceLog.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+
+	<typeAlias alias="shopTraceLog" type="com.ihome.matrix.domain.ShopTraceLogDO"/>
+	
+	<!--
+      - ===============================================
+      - 创建一个traceLog
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="shopTraceLog">
+		<![CDATA[
+	        INSERT INTO shop_trace_log (
+        		id,
+        		uuid,
+                user_id,
+                user_name,
+                remote_ip,
+                shop_id,
+                shop_name,
+                platform,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#uuid#
+	        	#user.id#,
+                #user.name#,
+                #remoteIP#,
+                #shop.id#,
+                #shop.name#,
+                #platform#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+</sqlMap>

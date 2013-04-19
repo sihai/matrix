@@ -1,0 +1,45 @@
+<div class="span3">
+	<div class="well member-box round-all"> 
+		<a><img #if(${user.logo}) src="$!{user.logo}" #else src="/assets/img/test.jpg" #end></a>
+	</div>
+	<div class="well sidebar-nav">
+		<ul class="nav nav-list">
+          	<li class="nav-header"></li>
+          	<li #if(!${_NAV_INDEX_} || ${_NAV_INDEX_} == 4 ) class="active" #end>
+          		<a href="/category.jhtml">
+          			<i class="icon-user"></i>类目管理
+          		</a>
+          	</li>
+          	<li #if(${_NAV_INDEX_} == 6 ) class="active" #end>
+          		<a href="/category_ass.jhtml">
+          			<i class="icon-user"></i>类目映射管理
+          		</a>
+          	</li>
+          	<li #if(${_NAV_INDEX_} == 0 ) class="active" #end>
+          		<a href="/brand_list.jhtml">
+          			<i class="icon-home"></i>品牌管理
+          		</a>
+          	</li>
+          	<li #if(${_NAV_INDEX_} == 1 ) class="active" #end>
+          		<a href="/product_list.jhtml">
+          			<i class="icon-user"></i>产品管理
+          		</a>
+          	</li>
+          	<li #if(${_NAV_INDEX_} == 2 ) class="active" #end>
+          		<a href="/shop_list.jhtml">
+          			<i class="icon-time"></i>店铺管理
+          		</a>
+          	</li>
+          	<li #if(${_NAV_INDEX_} == 3 ) class="active" #end>
+          		<a href="/item_list.jhtml">
+          			<i class="icon-picture"></i>宝贝管理
+          		</a>
+          	</li>
+          	<li #if(${_NAV_INDEX_} == 5 ) class="active" #end>
+          		<a href="/activity_list.jhtml">
+          			<i class="icon-picture"></i>活动管理
+          		</a>
+          	</li>
+		</ul>
+	</div><!--/.well -->
+</div><!--/span-->

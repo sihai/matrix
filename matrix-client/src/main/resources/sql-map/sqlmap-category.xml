@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="category.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="categoryCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="category.dao.insert"/>
+		<flushOnExecute statement="category.dao.update"/>
+		<flushOnExecute statement="category.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="category" type="com.ihome.matrix.domain.CategoryDO"/>
+	<typeAlias alias="categoryQueryModel" type="com.ihome.matrix.model.CategoryQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="categoryResultMap" class="category">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="description" column="description"/>
+		<result property="keywords" column="keywords"/>
+		<result property="status" column="status"/>
+		<result property="rank" column="rank"/>
+		<result property="parent.id" column="parent"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个category
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="category">
+		<![CDATA[
+	        INSERT INTO category (
+        		id,
+                name,
+                description,
+                keywords,
+                status,
+                rank,
+                parent,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#name#,
+	        	#description#,
+	        	#keywords#,
+	        	#status#,
+	        	#rank#,
+	        	#parent.id#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="categoryResultMap" cacheModel="categoryCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                description,
+                keywords,
+                status,
+                rank,
+                parent,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM category
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="query" parameterClass="categoryQueryModel" resultMap="categoryResultMap" cacheModel="categoryCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                name,
+                description,
+                keywords,
+                status,
+                rank,
+                parent,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM category
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="parent">
+    			<![CDATA[
+					parent = #parent#
+				]]>
+            </isNotNull>
+            <isNull prepend="AND" property="parent">
+    			<![CDATA[
+					parent IS NULL
+				]]>
+            </isNull>
+            <isNotNull prepend="AND" property="status">
+            	<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY rank DESC, id ASC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="categoryQueryModel" resultClass="long" cacheModel="categoryCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM category
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="parent">
+    			<![CDATA[
+					parent = #parent#
+				]]>
+            </isNotNull>
+            <isNull prepend="AND" property="parent">
+    			<![CDATA[
+					parent IS NULL
+				]]>
+            </isNull>
+            <isNotNull prepend="AND" property="status">
+            	<![CDATA[
+					status = #status#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新category
+      - ===============================================
+    -->
+	<update id="update" parameterClass="category">
+		UPDATE category
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="name">
+				name = #name:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="description">
+				description = #description:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="keywords">
+				keywords = #keywords:VARCHAR#
+            </isNotNull>
+			<isNotNull prepend="," property="status">
+				status = #status:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="rank">
+				rank = #rank:INT#      
+			</isNotNull>
+			<isNotNull prepend="," property="parent.id">
+				parent = #parent.id:INT#
+            </isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除User
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	category
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>
