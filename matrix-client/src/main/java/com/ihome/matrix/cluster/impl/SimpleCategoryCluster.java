@@ -39,7 +39,7 @@ public class SimpleCategoryCluster implements CategoryCluster {
 	 * 
 	 * @param root 类目树
 	 */
-	public void init(CategoryDO root) {
+	public void initialize(CategoryDO root) {
 		this.root = root;
 		if(null != root) {
 			cache = new BoundedConcurrentHashMap<ItemInfoHolder, CategoryInfoHolder>();

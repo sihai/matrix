@@ -32,7 +32,7 @@
 		#foreach($p in [${mStart}..${mEnd}])
 			<li>
 			#if($p == $cPage) ## 当前页
-		    	<a href="#" class="pre active">$!{p}</a>
+		    	<a href="#" class="active">$!{p}</a>
 			#else
 				<a class="pre" href="#" onclick="goto($p)">$!{p}</a>
 			#end

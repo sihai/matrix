@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tmpProduct.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="tmpProductCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="tmpProduct.dao.insert"/>
+		<flushOnExecute statement="tmpProduct.dao.update"/>
+		<flushOnExecute statement="tmpProduct.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="tmpProduct" type="com.ihome.matrix.domain.TmpProductDO"/>
+	<typeAlias alias="tmpProductQueryModel" type="com.ihome.matrix.model.TmpProductQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="tmpProductResultMap" class="tmpProduct">
+		<result property="id" column="id"/>
+		<result property="outProductId" column="out_product_id"/>
+		<result property="outProductName" column="out_product_name"/>
+		<result property="logoURL" column="logo_url"/>
+		<result property="outCategoryId" column="out_category_id"/>
+		<result property="outCategoryName" column="out_category_name"/>
+		<result property="description" column="description"/>
+		<result property="property" column="property"/>
+		<result property="platform" column="platform"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个tmpProduct
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="tmpProduct">
+		<![CDATA[
+	        INSERT INTO tmp_product (
+        		id,
+                out_product_id,
+                out_product_name,
+                logo_url,
+                out_category_id,
+                out_category_name,
+                description,
+                property,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#outProductId#,
+	        	#outProductName#,
+	        	#logoURL#,
+	        	#outCategoryId#,
+	        	#outCategoryName#,
+	        	#description#,
+	        	#property#,
+	        	#platform#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="tmpProductResultMap" cacheModel="tmpProductCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_product_id,
+                out_product_name,
+                logo_url,
+                out_category_id,
+                out_category_name,
+                description,
+                property,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM tmp_product
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<select id="getByOutProductIdAndPlatform" parameterClass="map" resultMap="tmpProductResultMap" cacheModel="tmpProductCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_product_id,
+                out_product_name,
+                logo_url,
+                out_category_id,
+                out_category_name,
+                description,
+                property,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM tmp_product
+	        WHERE 
+	        		out_product_id = #outProductId#
+	        	AND
+	        		platform = #platform#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="query" parameterClass="tmpProductQueryModel" resultMap="tmpProductResultMap" cacheModel="tmpProductCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_product_id,
+                out_product_name,
+                logo_url,
+                out_category_id,
+                out_category_name,
+                description,
+                property,
+                platform,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM tmp_product
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="outProductId">
+    			<![CDATA[
+					out_product_id = #outProductId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outProductName">
+    			<![CDATA[
+					out_product_name = #outProductName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outCategoryId">
+            	<![CDATA[
+					out_category_id = #outCategoryId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outCategoryName">
+            	<![CDATA[
+					out_category_name = #outCategoryName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id ASC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="tmpProductQueryModel" resultClass="long" cacheModel="tmpProductCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM tmp_product
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="outProductId">
+    			<![CDATA[
+					out_product_id = #outProductId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outProductName">
+    			<![CDATA[
+					out_product_name = #outProductName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outCategoryId">
+            	<![CDATA[
+					out_category_id = #outCategoryId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outCategoryName">
+            	<![CDATA[
+					out_category_name = #outCategoryName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 删除User
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	tmp_product
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

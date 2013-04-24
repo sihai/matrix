@@ -100,13 +100,13 @@ public interface CategoryManager {
 	 * 
 	 * @param queryModel
 	 * @return
-	 * @throws ValidateException
 	 */
 	ResultModel<CategoryAssDO> query(CategoryAssQueryModel queryModel);
 	
 	/**
 	 * 
 	 * @param categoryAss
+	 * @throws ValidateException
 	 */
 	void update(CategoryAssDO categoryAss) throws ValidateException;
 	

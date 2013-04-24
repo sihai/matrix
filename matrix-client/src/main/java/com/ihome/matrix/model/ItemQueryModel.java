@@ -4,6 +4,7 @@ public class ItemQueryModel extends BaseQueryModel {
 	
 	private String name;
 	private Long product;
+	private Long tmpProduct;
 	private Long category;
 	private Long shop;
 	private Integer status;
@@ -23,6 +24,11 @@ public class ItemQueryModel extends BaseQueryModel {
 	
 	public ItemQueryModel withProduct(Long product) {
 		this.product = product;
+		return this;
+	}
+	
+	public ItemQueryModel withTmpProduct(Long tmpProduct) {
+		this.tmpProduct = tmpProduct;
 		return this;
 	}
 	
@@ -68,6 +74,14 @@ public class ItemQueryModel extends BaseQueryModel {
 
 	public void setProduct(Long product) {
 		this.product = product;
+	}
+	
+	public Long getTmpProduct() {
+		return tmpProduct;
+	}
+
+	public void setTmpProduct(Long tmpProduct) {
+		this.tmpProduct = tmpProduct;
 	}
 	
 	public Long getCategory() {

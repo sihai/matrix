@@ -6,13 +6,16 @@ package com.ihome.matrix.manager.impl;
 import java.util.List;
 
 import com.ihome.matrix.dao.BrandDAO;
+import com.ihome.matrix.dao.ProductAssDAO;
 import com.ihome.matrix.dao.ProductDAO;
 import com.ihome.matrix.dao.exception.ValidateException;
 import com.ihome.matrix.domain.BrandDO;
 import com.ihome.matrix.domain.CategoryDO;
+import com.ihome.matrix.domain.ProductAssDO;
 import com.ihome.matrix.domain.ProductDO;
 import com.ihome.matrix.manager.CategoryManager;
 import com.ihome.matrix.manager.ProductManager;
+import com.ihome.matrix.model.ProductAssQueryModel;
 import com.ihome.matrix.model.ProductQueryModel;
 import com.ihome.matrix.model.ResultModel;
 
@@ -25,12 +28,13 @@ public class ProductManagerImpl implements ProductManager {
 	
 	private ProductDAO productDAO;
 	private BrandDAO brandDAO;
+	private ProductAssDAO productAssDAO;
 	
 	private CategoryManager categoryManager;
 	
 	@Override
 	public void add(ProductDO product) throws ValidateException {
-		validate(product);
+		validate(product, true);
 		productDAO.insert(product);
 	}
 
@@ -56,7 +60,7 @@ public class ProductManagerImpl implements ProductManager {
 
 	@Override
 	public void update(ProductDO product) throws ValidateException {
-		// TODO Update validate
+		validate(product, false);
 		productDAO.update(product);
 	}
 
@@ -65,12 +69,50 @@ public class ProductManagerImpl implements ProductManager {
 		productDAO.delete(id);
 	}
 	
+	@Override
+	public void add(ProductAssDO productAss) throws ValidateException {
+		validateProductAss(productAss, true);
+		productAssDAO.insert(productAss);
+	}
+
+	@Override
+	public ProductAssDO getProductAss(Long id) {
+		return productAssDAO.get(id);
+	}
+
+	@Override
+	public ResultModel<ProductAssDO> query(ProductAssQueryModel queryModel) {
+		return ResultModel.buildResultModel(queryModel, productAssDAO.query(queryModel), productAssDAO.count(queryModel));
+	}
+
+	@Override
+	public void update(ProductAssDO productAss) throws ValidateException {
+		validateProductAss(productAss, false);
+		productAssDAO.update(productAss);
+	}
+
+	@Override
+	public void deleteProductAss(Long id) {
+		productAssDAO.delete(id);
+	}
+
 	/**
 	 * 
 	 * @param product
+	 * @param isNew
 	 * @throws ValidateException
 	 */
-	private void validate(ProductDO product) throws ValidateException {
+	private void validate(ProductDO product, boolean isNew) throws ValidateException {
+		// TODO
+	}
+	
+	/**
+	 * 
+	 * @param productAss
+	 * @param isNew
+	 * @throws ValidateException
+	 */
+	private void validateProductAss(ProductAssDO productAss, boolean isNew) throws ValidateException {
 		// TODO
 	}
 	
@@ -107,6 +149,10 @@ public class ProductManagerImpl implements ProductManager {
 	
 	public void setBrandDAO(BrandDAO brandDAO) {
 		this.brandDAO = brandDAO;
+	}
+	
+	public void setProductAssDAO(ProductAssDAO productAssDAO) {
+		this.productAssDAO = productAssDAO;
 	}
 	
 	public void setCategoryManager(CategoryManager categoryManager) {

@@ -32,6 +32,7 @@
 		<result property="category.id" column="category"/>
 		<result property="brand.id" column="brand"/>
 		<result property="product.id" column="product"/>
+		<result property="tmpProduct" column="tmp_product"/>
 		<result property="logoURL" column="logo_url"/>
 		<result property="detailURL" column="detail_url"/>
 		
@@ -81,6 +82,7 @@
                 category,
                 brand,
                 product,
+                tmp_product,
                 logo_url,
                 detail_url,
                 location,
@@ -118,6 +120,7 @@
 	        	#category.id#,
 	        	#brand.id#,
 	        	#product.id#,
+	        	#tmpProduct#,
 	        	#logoURL#,
 	        	#detailURL#,
 	        	#location#,
@@ -171,6 +174,7 @@
                 category,
                 brand,
                 product,
+                tmp_product,
                 logo_url,
                 detail_url,
                 location,
@@ -220,6 +224,7 @@
                 category,
                 brand,
                 product,
+                tmp_product,
                 logo_url,
                 detail_url,
                 location,
@@ -267,6 +272,7 @@
                 category,
                 brand,
                 product,
+                tmp_product,
                 logo_url,
                 detail_url,
                 location,
@@ -312,6 +318,11 @@
 					product = #product#
 				]]>
             </isNotNull>
+            <isNotNull prepend="AND" property="tmpProduct">
+    			<![CDATA[
+					tmp_product = #tmpProduct#
+				]]>
+            </isNotNull>
             <isNotNull prepend="AND" property="shop">
     			<![CDATA[
 					shop = #shop#
@@ -349,6 +360,11 @@
             <isNotNull prepend="AND" property="product">
     			<![CDATA[
 					product = #product#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="tmpProduct">
+    			<![CDATA[
+					tmp_product = #tmpProduct#
 				]]>
             </isNotNull>
             <isNotNull prepend="AND" property="shop">
@@ -395,7 +411,10 @@
 				brand = #brand.id:INT#
             </isNotNull>
             <isNotNull prepend="," property="product.id">
-				product = #product.id:INT#
+				product = #product.id:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="tmpProduct">
+				tmp_product = #tmpProduct:BIGINT#
             </isNotNull>
             <isNotNull prepend="," property="logoURL">
 				logo_url = #logoURL:VARCHAR#

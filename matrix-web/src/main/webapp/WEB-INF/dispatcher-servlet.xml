@@ -63,6 +63,8 @@
 				<prop key="/brand.jhtml">brand</prop>
 				<prop key="/product_list.jhtml">productList</prop>
 				<prop key="/product.jhtml">product</prop>
+				<prop key="/tmp_product_list.jhtml">tmpProductList</prop>
+				<prop key="/tmp_product.jhtml">tmpProduct</prop>
 				<prop key="/shop_list.jhtml">shopList</prop>
 				<prop key="/shop.jhtml">shop</prop>
 				<prop key="/item_list.jhtml">itemList</prop>
@@ -114,6 +116,15 @@
 	<bean id="product" class="com.ihome.matrix.web.controller.Product">
 		<property name="productManager" ref="productManager" />
 		<property name="brandManager" ref="brandManager" />
+	</bean>
+	
+	<bean id="tmpProductList" class="com.ihome.matrix.web.controller.TmpProductList">
+		<property name="tmpProductManager" ref="tmpProductManager" />
+	</bean>
+	
+	<bean id="tmpProduct" class="com.ihome.matrix.web.controller.TmpProduct">
+		<property name="tmpProductManager" ref="tmpProductManager" />
+		<property name="productManager" ref="productManager" />
 	</bean>
 	
 	<bean id="shopList" class="com.ihome.matrix.web.controller.ShopList">

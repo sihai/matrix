@@ -9,6 +9,52 @@ GRANT ALL PRIVILEGES ON igo.* TO 'igo'@'localhost' IDENTIFIED BY '378206';
 
 USE `igo`;
 
+UPDATE category_ass SET shop_name = '华源大药房旗舰店' WHERE shop_name = '01-华源大药房';
+UPDATE category_ass SET shop_name = '立方大药房旗舰店' WHERE shop_name = '28-立方大药房';
+UPDATE category_ass SET shop_name = '万泽大药房旗舰店' WHERE shop_name = '29-万泽大药房';
+UPDATE category_ass SET shop_name = '新兴大药房旗舰店' WHERE shop_name = '30-新兴大药房';
+UPDATE category_ass SET shop_name = '百洋健康大药房旗舰店' WHERE shop_name = '31-百洋健康大药房';
+UPDATE category_ass SET shop_name = '仁博大药房旗舰店' WHERE shop_name = '32-仁博大药房';
+UPDATE category_ass SET shop_name = '复美大药房旗舰店' WHERE shop_name = '33-复美大药房';
+UPDATE category_ass SET shop_name = '德生堂大药房旗舰店' WHERE shop_name = '03-德生堂大药房';
+UPDATE category_ass SET shop_name = '华佗大药房旗舰店' WHERE shop_name = '04-华佗大药房';
+UPDATE category_ass SET shop_name = '海王星辰大药房旗舰店' WHERE shop_name = '05-海王星辰大药房';
+UPDATE category_ass SET shop_name = '亚洲大药房旗舰店' WHERE shop_name = '06-亚洲大药房';
+UPDATE category_ass SET shop_name = '健民大药房旗舰店' WHERE shop_name = '07-健民大药房';
+UPDATE category_ass SET shop_name = '健客大药房旗舰店' WHERE shop_name = '08-健客大药房';
+UPDATE category_ass SET shop_name = '上海大药房旗舰店' WHERE shop_name = '09-上海大药房';
+UPDATE category_ass SET shop_name = '吉大夫大药房旗舰店' WHERE shop_name = '10-吉大夫大药房';
+UPDATE category_ass SET shop_name = '昂生大药房旗舰店' WHERE shop_name = '11-昂生大药房';
+UPDATE category_ass SET shop_name = '开心人大药房旗舰店' WHERE shop_name = '12-开心人大药房';
+UPDATE category_ass SET shop_name = '康之家大药房旗舰店' WHERE shop_name = '13-康之家大药房';
+UPDATE category_ass SET shop_name = '天士力大药房旗舰店' WHERE shop_name = '14-天士力大药房';
+UPDATE category_ass SET shop_name = '康众之家大药房旗舰店' WHERE shop_name = '15-康众之家大药房';
+UPDATE category_ass SET shop_name = '惠好大药房旗舰店' WHERE shop_name = '16-惠好大药房';
+UPDATE category_ass SET shop_name = '壹号大药房旗舰店' WHERE shop_name = '17-壹号大药房';
+UPDATE category_ass SET shop_name = '和平大药房旗舰店' WHERE shop_name = '18-和平大药房';
+UPDATE category_ass SET shop_name = '九洲大药房旗舰店' WHERE shop_name = '19-九洲大药房';
+UPDATE category_ass SET shop_name = '嘉定大药房旗舰店' WHERE shop_name = '20-嘉定大药房';
+UPDATE category_ass SET shop_name = '乡亲大药房旗舰店' WHERE shop_name = '21-乡亲大药房';
+UPDATE category_ass SET shop_name = '京卫大药房旗舰店' WHERE shop_name = '22-京卫大药房';
+UPDATE category_ass SET shop_name = '先声再康大药房旗舰店' WHERE shop_name = '23-先声再康大药房';
+UPDATE category_ass SET shop_name = '同一大药房旗舰店' WHERE shop_name = '24-同一大药房';
+UPDATE category_ass SET shop_name = '百济新特大药房旗舰店' WHERE shop_name = '25-百济新特大药房';
+UPDATE category_ass SET shop_name = '上元堂大药房旗舰店' WHERE shop_name = '26-上元堂大药房';
+UPDATE category_ass SET shop_name = '康爱多大药房旗舰店' WHERE shop_name = '27-康爱多大药房';
+UPDATE category_ass SET shop_name = '健之佳大药房旗舰店' WHERE shop_name = '34-健之佳大药房';
+UPDATE category_ass SET shop_name = '华氏大药房旗舰店' WHERE shop_name = '35-华氏大药房';
+UPDATE category_ass SET shop_name = '存仁堂大药房旗舰店' WHERE shop_name = '36-存仁堂大药房';
+UPDATE category_ass SET shop_name = '彩虹大药房旗舰店' WHERE shop_name = '37-彩虹大药房';
+UPDATE category_ass SET shop_name = '德威治大药房旗舰店' WHERE shop_name = '38-德威治大药房';
+UPDATE category_ass SET shop_name = '金象大药房旗舰店' WHERE shop_name = '39-金象大药房';
+UPDATE category_ass SET shop_name = '云南白药大药房旗舰店' WHERE shop_name = '40-云南白药大药房';
+UPDATE category_ass SET shop_name = '人民同泰大药房旗舰店' WHERE shop_name = '41-人民同泰大药房';
+UPDATE category_ass SET shop_name = '二元堂大药房旗舰店' WHERE shop_name = '42-二元堂大药房';
+UPDATE category_ass SET shop_name = '医保中洋大药房旗舰店' WHERE shop_name = '43-医保中洋大药房';
+UPDATE category_ass SET shop_name = '四明大药房旗舰店' WHERE shop_name = '44-四明大药房';
+UPDATE category_ass SET shop_name = '漱玉平民大药房旗舰店' WHERE shop_name = '46-漱玉平民大药房';
+UPDATE category_ass SET shop_name = '天健国药堂大药房旗舰店' WHERE shop_name = '47-天健国药堂大药房';
+
 SET foreign_key_checks = 0;
 SET foreign_key_checks = 1;
 --
@@ -199,6 +245,7 @@ CREATE TABLE item (
 	logo_url VARCHAR(1024) NOT NULL,
 	brand BIGINT(22),
 	product BIGINT(22),
+	tmp_product BIGINT(22),
 	category BIGINT(22),
 	number BIGINT(22),
 	sale_count_pre_month BIGINT(22),
@@ -513,7 +560,7 @@ INSERT INTO category (
 	now(),
 	now()
 );
-
+mysqlbinlog –stop-date=’2013-04-22 02:15:00′ /var/lib/mysql/mysql-bin.000001  | mysql -u root -p378206 -S/var/lib/mysql/mysql.sock
 --
 -- Table structure for table `category_ass`
 --
@@ -529,5 +576,44 @@ CREATE TABLE category_ass (
 	gmt_create DATETIME NOT NULL,
 	gmt_modified DATETIME NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT `inner_category_id_category` FOREIGN KEY (`inner_category_id`) REFERENCES `category`(`id`)
+	CONSTRAINT `category_ass_inner_category` FOREIGN KEY (`inner_category_id`) REFERENCES `category`(`id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_bin;
+
+
+--
+-- Table structure for table `product_ass`
+--
+DROP TABLE IF EXISTS product_ass;
+CREATE TABLE product_ass (
+	id BIGINT(22) NOT NULL AUTO_INCREMENT,
+	out_product_id BIGINT(22),
+	out_product_name VARCHAR(128),
+	platform INT NOT NULL,
+	shop_name VARCHAR(128),
+	inner_product_id BIGINT(22) NOT NULL,
+	is_deleted TINYINT NOT NULL,
+	gmt_create DATETIME NOT NULL,
+	gmt_modified DATETIME NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT `product_ass_inner_product` FOREIGN KEY (`inner_product_id`) REFERENCES `product`(`id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_bin;
+
+--
+-- Table structure for table `tmp_product`
+--
+DROP TABLE IF EXISTS tmp_product;
+CREATE TABLE tmp_product (
+	id BIGINT(22) NOT NULL AUTO_INCREMENT,
+	out_product_id BIGINT(22) NOT NULL,
+	out_product_name VARCHAR(128) NOT NULL,
+	logo_url VARCHAR(1024),
+	out_category_id BIGINT(22),
+	out_category_name VARCHAR(128),
+	description VARCHAR(25000),
+	property VARCHAR(4096),
+	platform INT NOT NULL,
+	is_deleted TINYINT NOT NULL,
+	gmt_create DATETIME NOT NULL,
+	gmt_modified DATETIME NOT NULL,
+	PRIMARY KEY (id)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_bin;

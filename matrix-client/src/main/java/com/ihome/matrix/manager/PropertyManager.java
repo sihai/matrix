@@ -4,8 +4,10 @@
 package com.ihome.matrix.manager;
 
 import com.ihome.matrix.dao.exception.ValidateException;
+import com.ihome.matrix.domain.ProductAssDO;
 import com.ihome.matrix.domain.PropertyDO;
 import com.ihome.matrix.domain.PropertyGroupDO;
+import com.ihome.matrix.model.ProductAssQueryModel;
 import com.ihome.matrix.model.PropertyGroupQueryModel;
 import com.ihome.matrix.model.PropertyQueryModel;
 import com.ihome.matrix.model.ResultModel;

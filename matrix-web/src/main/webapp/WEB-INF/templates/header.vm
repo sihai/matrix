@@ -25,6 +25,11 @@
           			<i class="icon-user"></i>产品管理
           		</a>
           	</li>
+          	<li #if(${_NAV_INDEX_} == 7 ) class="active" #end>
+          		<a href="/tmp_product_list.jhtml">
+          			<i class="icon-user"></i>临时产品管理
+          		</a>
+          	</li>
           	<li #if(${_NAV_INDEX_} == 2 ) class="active" #end>
           		<a href="/shop_list.jhtml">
           			<i class="icon-time"></i>店铺管理

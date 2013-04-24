@@ -33,6 +33,12 @@
 	<bean id="productDAO" class="com.ihome.matrix.dao.ibatis.ProductDAOImpl">
 		<property name="sqlMapClient" ref="matrixSqlMapClient" />
 	</bean>
+	<bean id="tmpProductDAO" class="com.ihome.matrix.dao.ibatis.TmpProductDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
+	<bean id="productAssDAO" class="com.ihome.matrix.dao.ibatis.ProductAssDAOImpl">
+		<property name="sqlMapClient" ref="matrixSqlMapClient" />
+	</bean>
 	<bean id="propertyGroupDAO" class="com.ihome.matrix.dao.ibatis.PropertyGroupDAOImpl">
 		<property name="sqlMapClient" ref="matrixSqlMapClient" />
 	</bean>
@@ -97,8 +103,12 @@
 	</bean>
 	<bean id="productManager" class="com.ihome.matrix.manager.impl.ProductManagerImpl">
 		<property name="productDAO" ref="productDAO" />
+		<property name="productAssDAO" ref="productAssDAO" />
 		<property name="brandDAO" ref="brandDAO" />
 		<property name="categoryManager" ref="categoryManager" />
+	</bean>
+	<bean id="tmpProductManager" class="com.ihome.matrix.manager.impl.TmpProductManagerImpl">
+		<property name="tmpProductDAO" ref="tmpProductDAO" />
 	</bean>
 	<bean id="itemManager" class="com.ihome.matrix.manager.impl.ItemManagerImpl">
 		<property name="itemDAO" ref="itemDAO" />

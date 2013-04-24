@@ -18,7 +18,7 @@ import com.ihome.matrix.model.ResultModel;
  * @author sihai
  *
  */
-public class DefaultCluster implements CategoryCluster, ProductCluster {
+public class DefaultCluster implements Cluster {
 	
 	private CategoryManager categoryManager;
 	private ProductManager	productManager;
@@ -26,7 +26,7 @@ public class DefaultCluster implements CategoryCluster, ProductCluster {
 	private CategoryCluster categoryCluster;
 	private ProductCluster	productCluster;
 	
-	public void init() {
+	public void initialize() {
 		
 		// 
 		CategoryDO root = new CategoryDO();
@@ -38,7 +38,7 @@ public class DefaultCluster implements CategoryCluster, ProductCluster {
 			_init_(child);
 		}
 		categoryCluster = new SimpleCategoryCluster();
-		((SimpleCategoryCluster)categoryCluster).init(root);
+		((SimpleCategoryCluster)categoryCluster).initialize(root);
 	}
 	
 	@Override

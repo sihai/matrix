@@ -87,6 +87,7 @@ public abstract class AbstractController implements Controller {
 		NAV_MAP.put("category.jhtml", 4L);
 		NAV_MAP.put("activity_list.jhtml", 5L);
 		NAV_MAP.put("category_ass.jhtml", 6L);
+		NAV_MAP.put("tmp_product_list.jhtml", 7L);
 	}
 	
 	@Override

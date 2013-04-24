@@ -10,7 +10,12 @@
   default-autowire="byName">
 
 	<!-- Cluster -->
-	<bean id="defaultCluster" class="com.ihome.matrix.cluster.DefaultCluster" init-method="init">
+	<!-- <bean id="defaultCluster" class="com.ihome.matrix.cluster.DefaultCluster" init-method="initialize">
+		<property name="categoryManager" ref="categoryManager" />
+		<property name="productManager" ref="productManager" />
+	</bean> -->
+	
+	<bean id="defaultCluster" class="com.ihome.matrix.cluster.MetadataCluster" init-method="initialize">
 		<property name="categoryManager" ref="categoryManager" />
 		<property name="productManager" ref="productManager" />
 	</bean>

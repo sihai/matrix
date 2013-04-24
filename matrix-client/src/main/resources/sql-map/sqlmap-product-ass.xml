@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="productAss.dao">
+	
+	<!--
+      - ===============================================
+      - 配置缓存
+      - ===============================================
+    -->
+    
+	<cacheModel id="productAssCache" type="LRU">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="productAss.dao.insert"/>
+		<flushOnExecute statement="productAss.dao.update"/>
+		<flushOnExecute statement="productAss.dao.delete"/>
+		<property name="cache-size" value="1024"/>
+	</cacheModel>
+
+	<typeAlias alias="productAss" type="com.ihome.matrix.domain.ProductAssDO"/>
+	<typeAlias alias="productAssQueryModel" type="com.ihome.matrix.model.ProductAssQueryModel"/>
+	
+	<!--
+      - ===============================================
+      - 配置结果映射
+      - ===============================================
+    -->
+	<resultMap id="productAssResultMap" class="productAss">
+		<result property="id" column="id"/>
+		<result property="outProductId" column="out_product_id"/>
+		<result property="outProductName" column="out_product_name"/>
+		<result property="platform" column="platform"/>
+		<result property="product.id" column="inner_product_id"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="gmtCreate" column="gmt_create"/>
+		<result property="gmtModified" column="gmt_modified"/>
+	</resultMap>
+	
+	<!--
+      - ===============================================
+      - 创建一个productAss
+      - ===============================================
+    -->
+	<insert id="insert" parameterClass="productAss">
+		<![CDATA[
+	        INSERT INTO product_ass (
+        		id,
+                out_product_id,
+                out_product_name,
+                platform,
+                inner_product_id,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        ) VALUES (
+	        	null,
+	        	#outProductId#,
+	        	#outProductName#,
+	        	#platform#,
+	        	#product.id#,
+	        	#isDeleted#,
+	        	now(),
+                now()
+	        )
+    	]]>
+    	<selectKey resultClass="long" keyProperty="id" >
+   			<![CDATA[
+   				SELECT @@IDENTITY AS id
+   			]]>
+   		</selectKey> 
+	</insert>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="get" parameterClass="long" resultMap="productAssResultMap" cacheModel="productAssCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_product_id,
+                out_product_name,
+                platform,
+                inner_product_id,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM product_ass
+	        WHERE id = #value#
+    	]]>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 按id查询
+      - ===============================================
+    -->
+	<select id="query" parameterClass="productAssQueryModel" resultMap="productAssResultMap" cacheModel="productAssCache">
+		<![CDATA[
+	        SELECT
+	        	id,
+                out_product_id,
+                out_product_name,
+                platform,
+                inner_product_id,
+                is_deleted,
+                gmt_create,
+                gmt_modified
+	        FROM product_ass
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="outProductId">
+    			<![CDATA[
+					out_product_id = #outProductId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outProductName">
+            	<![CDATA[
+					out_product_name = #outProductName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="innerProductId">
+            	<![CDATA[
+					inner_product_id = #innerProductId#
+				]]>
+            </isNotNull>
+        </dynamic>
+        ORDER BY id ASC
+        LIMIT #start#, #pageSize#
+	</select>
+	
+	<select id="count" parameterClass="productAssQueryModel" resultClass="long" cacheModel="productAssCache">
+		<![CDATA[
+	        SELECT
+	        	COUNT(id)
+	        FROM product_ass
+    	]]>
+    	<dynamic prepend="WHERE">
+    		<isNotNull prepend="AND" property="outProductId">
+    			<![CDATA[
+					out_product_id = #outProductId#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="outProductName">
+            	<![CDATA[
+					out_product_name = #outProductName#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="platform">
+            	<![CDATA[
+					platform = #platform#
+				]]>
+            </isNotNull>
+            <isNotNull prepend="AND" property="innerProductId">
+            	<![CDATA[
+					inner_product_id = #innerProductId#
+				]]>
+            </isNotNull>
+        </dynamic>
+	</select>
+	
+	<!--
+      - ===============================================
+      - 更新productAss
+      - ===============================================
+    -->
+	<update id="update" parameterClass="productAss">
+		UPDATE product_ass
+		SET
+			gmt_modified = now()
+		<dynamic>
+			<isNotNull prepend="," property="outProductId">
+				out_product_id = #outProductId:BIGINT#
+            </isNotNull>
+            <isNotNull prepend="," property="outProductName">
+				out_product_name = #outProductName:VARCHAR#
+            </isNotNull>
+            <isNotNull prepend="," property="platform">
+				platform = #platform:INT#
+            </isNotNull>
+			<isNotNull prepend="," property="product.id">
+				inner_product_id = #product.id:BIGINT#      
+			</isNotNull>
+		</dynamic>
+	    WHERE id = #id#
+	</update>
+	
+	<!--
+      - ===============================================
+      - 删除User
+      - ===============================================
+    -->
+	<delete id="delete" parameterClass="long">
+		<![CDATA[
+	        DELETE FROM
+	        	product_ass
+	        WHERE id = #value#
+    	]]>
+	</delete>
+</sqlMap>

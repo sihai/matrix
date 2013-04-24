@@ -81,6 +81,8 @@ public class ItemDO extends BaseDO {
 	@Field
 	private ProductDO product;				// 所属产品
 	
+	private Long tmpProduct;				// 
+
 	// 商品评价 来自商品所属Shop, 5分标准
 	@Field
 	private Long score;						// 评分
@@ -309,6 +311,14 @@ public class ItemDO extends BaseDO {
 
 	public void setProduct(ProductDO product) {
 		this.product = product;
+	}
+	
+	public Long getTmpProduct() {
+		return tmpProduct;
+	}
+
+	public void setTmpProduct(Long tmpProduct) {
+		this.tmpProduct = tmpProduct;
 	}
 
 	public Long getScore() {

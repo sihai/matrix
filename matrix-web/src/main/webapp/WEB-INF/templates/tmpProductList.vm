@@ -4,7 +4,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-	    <title>Matrix-Console:宝贝管理</title>
+	    <title>Matrix-Console:临时产品管理</title>
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <meta name="description" content="Matrix,Console,Brand">
 	
@@ -35,8 +35,8 @@
           				<div class="page-header">
           					<table style="width:100%;">
 								<tr>
-									<td style="text-align:left;"><h1>宝贝管理 <small>记录活动中美好的瞬间，终生难忘！</small></h1></td>
-									<td style="text-align:right;"><a class="btn btn-primary" href="#" onclick="newItem()">添加宝贝</a></td>
+									<td style="text-align:left;"><h1>临时产品管理 <small>记录活动中美好的瞬间，终生难忘！</small></h1></td>
+									<td style="text-align:right;"><a class="btn btn-primary" href="#" onclick="newProduct()">添加产品</a></td>
 								</tr>
 					    	</table>
 						</div>
@@ -46,7 +46,7 @@
 							<div class="navbar navbar-static navbar_as_heading">
 								<div class="navbar-inner">
 									<div style="width: auto;" class="container">
-										<a class="brand">宝贝</a>
+										<a class="brand">临时产品</a>
 									</div>
 								</div>
 							</div>
@@ -59,8 +59,8 @@
 										<button class="btn btn-small btn-duadua"><i class="icon-trash-2 btn-duadua"></i> Trash <span class="badge badge-important abs1"></span></button>
 									</div>
 								</div>
-								<form action="/item.jhtml" class="navbar-search pull-right">
-									<input name="name" type="text" class="search-query" #if(${resultModel.queryModel.name}) value="$!{resultModel.queryModel.name}" #else  placeholder="Search" #end>
+								<form action="/product.jhtml" class="navbar-search pull-right">
+									<input name="name" type="text" class="search-query" #if(${resultModel.queryModel.outProductName}) value="$!{resultModel.queryModel.outProductName}" #else  placeholder="搜索" #end>
 								</form>
 							</div>
 							
@@ -70,40 +70,36 @@
 							<table class="table smallfont">
 								<thead>
 									<tr>
-										<td>宝贝名称</td>
 										<td>Logo</td>
-										<td>价格</td>
-										<td>产品</td>
-										<td>类目</td>
-										<td>状态</td>
-										<td>操作</td>
+										<td>外部产品ID</td>
+										<td>外部产品名称</td>
+										<td>外部类目ID</td>
+										<td>外部类目名称</td>
+										<td>平台</td>
 									</tr>
 								</thead>
 								<tbody>
-									#foreach($item in ${resultModel.itemList})
+									#foreach($tmpProduct in ${resultModel.itemList})
 										<tr>
+											<td><img style="width:80px;heigh:80px;" src="$!{tmpProduct.logoURL}" /></td>
 											<td>
-												<a class="post_title" target="_blank" href="$!{item.detailURL}">$!{item.name}</a>
-												<div class="operation">
-													<div style="display: none;" class="btn-group">
-													  <button class="btn btn-small"><i class="icon-pencil-1"></i> Edit</button>
-													  <button class="btn btn-small"><i class="icon-eye-2"></i> View</button>
-													  <button class="btn btn-small"><i class="icon-trash-empty"></i> Delete</button>
-													</div>
-												</div>
-											</td>
-											<td><img style="width:80px;heigh:80px;" src="$!{item.logoURL}" /></td>
-											<td>$!{item.price}</td>
-											<td><a target="_blank" href="#">$!{item.product.name}</a></td>
-											<td>
-												$!{item.strCategoryPath}
+												$!{tmpProduct.outProductId}
 											</td>
 											<td>
-												$!{ItemStatusEnum.toEnum($!{item.status}).name}
+												$!{tmpProduct.outProductName}
 											</td>
 											<td>
-												<a class="btn btn-primary" onclick='updateItem($!{item.toJSON()})' href="#">修改</a>
-												<a class="btn btn-danger" onclick="deleteItem($!{item.id}, '$!{item.name}')" href="#">删除</a>
+												$!{tmpProduct.outCategoryId}
+											</td>
+											<td>
+												$!{tmpProduct.outCategoryName}
+											</td>
+											<td>
+												$!{PlatformEnum.toEnum($!{tmpProduct.platform}).name}
+											</td>
+											<td>
+												<a class="btn btn-primary" onclick="viewTmpProduct($!{tmpProduct.id})" href="#">查看</a>
+												<a class="btn btn-danger" onclick="deleteTmpProduct($!{tmpProduct.id}, '$!{tmpProduct.outProductName}')" href="#">删除</a>
 											</td>
 										</tr>
 									#end
@@ -115,15 +111,13 @@
 						</div>
 					</div>
 		            	
-		            	
-		            	
 	          		</div><!--/row-->
        	 		</div><!--/span-->
       		</div><!--/row-->
 			#parse("footer.vm")
     	</div><!--/.fluid-container-->
     	
-    	<!--二次确认层-->
+		<!--二次确认层-->
 		<div class="modal hide fade" id="deleteLayer" style="width:400px;">
 			<div class="widget_container">
 				<div class="well">
@@ -136,9 +130,9 @@
 					</div>
 					<div id="ask" class="alert alert-error"></div>
 					<div class="btn-toolbar" style="float:right;margin-bottom:10px;">
-						<form id="deleteForm" class="form-horizontal" method="post" action="/item_action.jhtml">
+						<form id="deleteForm" class="form-horizontal" method="post" action="/product_action.jhtml">
 							<input type="hidden" name="_operation_" value="_delete_">
-			 				<input type="hidden" id="item_id" name="id" value="">
+			 				<input type="hidden" id="product_id" name="id" value="">
 							<div class="btn-group">
 						    	<button type="submit" class="btn btn-primary" style="width:128px;">提交</button>
 						    	<button class="btn btn-danger" data-dismiss="modal" style="width:128px;">取消</button>
@@ -150,42 +144,8 @@
 		</div>
 		<!--二次确认层End-->
 		
-		<div class="modal hide fade" id="newLayer" style="width:480px;">
-  			<div class="widget_container">
-				<div class="well">
-					<div class="navbar navbar-static navbar_as_heading">
-						<div class="navbar-inner">
-							<div style="width: auto;" class="container">
-								<a class="brand"><i class="icon-th-large-1">添加宝贝</i></a>
-							</div>
-						</div>
-					</div>
-					<form id="newForm" method="post" action="/brand_action.jhtml" enctype="multipart/form-data">
-						<input type="hidden" id="_operation_" name="_operation_" value="_create_">
-						<input type="hidden" id="id" name="id" value="">
-						<input type="text" placeholder="品牌名称" class="input-xxlarge-fluid required" id="name" name="name">
-						<input type="file" placeholder="品牌Logo" class="input-xlarge-fluid required" id="logo" name="logo">
-						<input type="text" placeholder="品牌公司名称" class="input-xxlarge-fluid required" id="company_name" name="company_name">
-						<input type="text" placeholder="品牌公司主页" class="input-xxlarge-fluid required" id="company_u_r_l" name="company_u_r_l">
-						
-						<select id="status" name="status">
-							#foreach($status in ${BrandStatusEnum.values()})
-								<option value="$!{status.value}">$!{status.name}</option>
-							#end
-						</select>
-						
-						<div class="btn-toolbar" style="float:right;margin-bottom:10px;">
-							<div class="btn-group">
-						    	<button type="submit" class="btn btn-primary" style="width:128px;">提交</button>
-						    	<button class="btn btn-danger" data-dismiss="modal" style="width:128px;">取消</button>
-						  	</div>
-						</div>
-					</form>
-				</div>	
-			</div>
-		</div>
 		#parse("js.vm")
-		<form id="page_form" method="get" action="/item_list.jhtml">
+		<form id="page_form" method="get" action="/product_list.jhtml">
 			<input type="hidden" id="status" name="status" value="$!{resultModel.queryModel.status}" />
 			<input type="hidden" id="current_page" name="current_page" value="$!{resultModel.queryModel.currentPage}" />
 		</form>
@@ -193,20 +153,42 @@
   
   	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#newForm").validate();
+			initCategory();
 		});
 		
-		function newItem() {
-			
+		function newTmpProduct() {
+			${JQUERY}layer({
+			    type : 2,
+			    title : ['添加临时产品',true],
+			    iframe : {src : '/tmp_product.jhtml'},
+			    area : ['700px' , '600px'],
+			    offset : ['100px','']
+			});
 		}
 		
-		function updateItem(brand) {
-			
+		function viewTmpProduct(product) {
+			${JQUERY}layer({
+			    type : 2,
+			    title : ['产看临时产品',true],
+			    iframe : {src : '/tmp_product.jhtml?id=' + product },
+			    area : ['700px' , '600px'],
+			    offset : ['100px','']
+			});
 		}
 		
-		function deleteItem(id, name) {
-			$("#brand_id").val(id);
-			$("#ask").html("<strong>Warning!</strong>" + "您确认删除宝贝：" + name + "？");
+		function updateTmpProduct(product) {
+			${JQUERY}layer({
+			    type : 2,
+			    title : ['修改临时产品',true],
+			    iframe : {src : '/tmp_product.jhtml?id=' + product },
+			    area : ['700px' , '600px'],
+			    offset : ['100px','']
+			});
+		}
+		
+		function deleteTmpProduct(id, name) {
+			$("#product_id").val(id);
+			$("#ask").html("<strong>Warning!</strong>" + "您确认删除临时产品：" + name + "？");
 			$('#deleteLayer').modal({
 	 			keyboard: true
 			});

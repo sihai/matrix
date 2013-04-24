@@ -20,6 +20,8 @@
 	<sqlMap resource="sql-map/sqlmap-brand-category.xml"/>
 	<sqlMap resource="sql-map/sqlmap-brand-product.xml"/>
 	<sqlMap resource="sql-map/sqlmap-product.xml"/>
+	<sqlMap resource="sql-map/sqlmap-tmp-product.xml"/>
+	<sqlMap resource="sql-map/sqlmap-product-ass.xml"/>
 	<sqlMap resource="sql-map/sqlmap-category.xml"/>
 	<sqlMap resource="sql-map/sqlmap-category-ass.xml"/>
 	<sqlMap resource="sql-map/sqlmap-shop-product.xml"/>

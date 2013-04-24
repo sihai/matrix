@@ -6,7 +6,7 @@ package com.ihome.matrix.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.it.iddl.util.StringUtil;
+import com.iacrqq.util.StringUtil;
 
 /**
  * 

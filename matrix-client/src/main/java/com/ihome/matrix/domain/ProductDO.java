@@ -22,6 +22,8 @@ public class ProductDO extends BaseDO {
 	private BrandDO brand;						// 品牌
 	private CategoryDO category;				// 类目
 	
+	private String description;					// 
+	
 	@Field
 	private Integer status;						// 状态
 	
@@ -69,6 +71,14 @@ public class ProductDO extends BaseDO {
 
 	public void setCategory(CategoryDO category) {
 		this.category = category;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Integer getStatus() {
